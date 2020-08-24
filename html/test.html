@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Test</title>
+</head>
+<style>
+    .header {
+        border: red 5px solid;
+        width: 5em;
+        height: 5em;
+    }
+</style>
+<body>
+<h1>名字： {{.Name}}</h1>
+<h2>年龄：{{.Age}}</h2>
+<div style="display: flex; align-items: center;height: 7em">
+    头像：<img class="header" src="{{.Header}}" alt="{{.Name}}"/>
+</div>
+<script src="https://cdn.bootcdn.net/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+<script>
+    $(".header").click(function () {
+        hello()
+    })
+
+    $(".header").mouseover(function () {
+        $(this).css('border','green 7px solid')
+    }).mouseleave(function () {
+        $(this).css('border','red 5px solid')
+    })
+
+    function hello() {
+        $.ajax({
+            url: '/hello',
+            success: function (data) {
+                alert(data)
+            },
+            error: function (err) {
+                alert(JSON.stringify(err))
+            }
+        })
+    }
+</script>
+</body>
+</html>
