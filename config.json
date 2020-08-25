@@ -1,1 +1,1 @@
-[{"source":"1300","destination":"192.168.0.123:3000","tls":false,"tlsCf":null},{"source":"443","destination":"192.168.0.123:3000","tls":true,"tlsCf":{"crtPath":"./certs/server.pem","keyPath": "./certs/server.key"}}]
+[{"source":"28020","destination":"192.168.0.123:2802","tls":false,"tlsCf":null},{"source":"443","destination":"192.168.0.123:3000","tls":true,"tlsCf":{"crtPath":"./certs/server.pem","keyPath": "./certs/server.key"}}]
