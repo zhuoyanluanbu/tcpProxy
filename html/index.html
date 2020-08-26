@@ -68,6 +68,19 @@
         border-collapse: collapse;
     }
 
+    #rightTable thead {
+        background: #FF6F82;
+        color: white;
+    }
+    #leftTable thead {
+        background: cornflowerblue;
+        color: white;
+    }
+    #leftTable td,#leftTable th {
+        padding-right: 0.6em;
+    }
+
+
     .leftDiv {
         height: 100%;
     }
@@ -87,6 +100,7 @@
         box-shadow: 1px 1px 3px #888888;
         margin: 0 0.3em;
         height: 2.6em;
+        font-size: 0.7em;
     }
 
     .manageBtn {
@@ -174,12 +188,12 @@
     <div class="configs">
         <div>配置信息</div>
         <div class="sysBtns">
-            <button type="button" class="saveBtn" onclick="addData()" style="background-color: green;"
-                    id="addBtn">增加</button>
-            <button class="saveBtn" onclick="uploadFile()" id="uploadBtn">上传证书</button>
-            <button class="saveBtn" onclick="startRun()" id="applyBtn">启动</button>
-            <button class="saveBtn" onclick="stopRun()" style="background-color: red;display: none;margin-left: 17%"
-                    id="stopBtn">结束</button>
+            <button type="button" class="saveBtn" onclick="addData()" style="background-color: #3910ff;"
+                    id="addBtn">＋增加</button>
+            <button class="saveBtn" onclick="uploadFile()" style="background-color: #9d89ff;" id="uploadBtn">上传证书️</button>
+            <button class="saveBtn" onclick="startRun()" id="applyBtn">▶ 启动</button>
+            <button class="saveBtn" onclick="stopRun()" style="background-color: #ff2482;display: block;"
+                    id="stopBtn">■ 结束</button>
         </div>
     </div>
 </div>
@@ -291,7 +305,7 @@
             html += '<tr><td><input type="checkbox" class="encode-checkbox"></td>' +
                 '<td><input onblur="updatePort1(' + i + ',this)" id="port1-' + i + '" style="width: 3.8em;text-align: center" type="number" value="' + testData[i].port1 + '"></td>' +
                 '<td style="text-align: center;"><input style="width: 8em" id="ip-' + i + '" onblur="updateIp(' + i + ',this)" type="text" value="' + testData[i].ip + '">' + ' : <input id="port2-' + i + '" onblur="updatePort2(' + i + ',this)" style="width: 3.8em" type="number" value="' + testData[i].port2 + '"></span></td>' +
-                '<td><button class="manageBtn" type="button" onclick="chooseFile(' + i + ')">选择证书</button></td><td><button class="manageBtn" style="background-color: #FF6F82" type="button" onclick="deleteData(this,' + i + ')">删除</button></td></tr>';
+                '<td><button class="manageBtn" type="button" onclick="chooseFile(' + i + ')">选择证书</button></td><td><button class="manageBtn" style="background-color: #c467ff" type="button" onclick="deleteData(this,' + i + ')">删除</button></td></tr>';
         }
         $('#leftTbody').html(html);
         size = testData.length;
@@ -327,9 +341,9 @@
     /*增加数据*/
     function addData() {
         var html = '<tr><td><input type="checkbox" class="encode-checkbox"></td>' +
-            '<td><input onblur="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 50%" type="number" ></td>' +
-            '<td style="text-align: left"><input id="ip-' + size + '" onblur="updateIp(' + size + ',this)" type="text" >' + ' : <input id="port2-' + size + '" onblur="updatePort2(' + size + ',this)" style="width: 20%" type="number" ></span></td>' +
-            '<td><button class="manageBtn" type="button" onclick="chooseFile(' + size + ')">选择证书</button></td><td><button class="manageBtn" style="background-color: #ff8787" type="button" onclick="deleteData(this,' + size + ')">删除</button></td></tr>';
+            '<td><input onblur="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 3.8em" type="number" ></td>' +
+            '<td style="text-align: center"><input style="width:8em;" id="ip-' + size + '" onblur="updateIp(' + size + ',this)" type="text" >' + ' : <input id="port2-' + size + '" onblur="updatePort2(' + size + ',this)" style="width: 3.8em" type="number" ></span></td>' +
+            '<td><button class="manageBtn" type="button" onclick="chooseFile(' + size + ')">选择证书</button></td><td><button class="manageBtn" style="background-color: #c467ff" type="button" onclick="deleteData(this,' + size + ')">删除</button></td></tr>';
         $('#leftTbody').append(html);
         size++;
         var arr = {'port1': null, 'ip': null, 'port2': null};
