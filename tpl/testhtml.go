@@ -26,7 +26,7 @@ func tmpl(w http.ResponseWriter, r *http.Request) {
 
 func RunTplTest() {
 	server := http.Server{
-		Addr: "127.0.0.1:8080",
+		Addr: "192.168.0.110:8081",
 	}
 	http.HandleFunc("/tmpl", tmpl)
 	http.HandleFunc("/hello", func(writer http.ResponseWriter, request *http.Request) {

@@ -8,7 +8,6 @@ import (
 	"log"
 	"net"
 	"strconv"
-	"strings"
 	"sync"
 )
 
@@ -18,16 +17,12 @@ type Addr struct {
 }
 
 type Bridge struct {
-	Source             *Addr
-	Destination        *Addr
-	OuterSelfConn      net.Conn
-	SelfDestConn       net.Conn
-	WriteToDestination chan []byte
-	WriteToSource      chan []byte
+	Source             net.Conn       `json:"sourceConn"`
+	Destination        net.Conn       `json:"destinationConn"`
 }
 
 var listeners = make([]net.Listener, 0)
-var connMap = make(map[net.Conn]*Bridge)
+var ConnMap = make(map[net.Conn]*Bridge)
 var lock = &sync.Mutex{}
 
 var IsStart = false
@@ -41,10 +36,10 @@ func Start() {
 }
 
 func Stop() {
-	for k, v := range connMap {
-		v.SelfDestConn.Close()
-		v.OuterSelfConn.Close()
-		delete(connMap, k)
+	for k, v := range ConnMap {
+		v.Source.Close()
+		v.Destination.Close()
+		delete(ConnMap, k)
 	}
 	for _, l := range listeners {
 		l.Close()
@@ -87,7 +82,7 @@ func bindProxy(p *ProxyConf) {
 		if er != nil {
 			continue
 		}
-		go handle(conn, bindPort, destination)
+		go handle(conn, destination)
 	}
 }
 
@@ -95,13 +90,13 @@ func bindProxy(p *ProxyConf) {
 * 处理转发
 * proxyPort 需要转发的目的端口
 */
-func handle(sourceConn net.Conn, bindPort int, destination string) {
+func handle(sourceConn net.Conn, destination string) {
 	defer lock.Unlock()
 	lock.Lock()
 
-	destination_ip_port := strings.Split(destination, ":")
-	destination_ip := destination_ip_port[0]
-	destination_port, _ := strconv.Atoi(destination_ip_port[1])
+	//destination_ip_port := strings.Split(destination, ":")
+	//destination_ip := destination_ip_port[0]
+	//destination_port, _ := strconv.Atoi(destination_ip_port[1])
 
 	//destConn := toDestination(sourceConn, destination)
 	tcpAddr_dest, err := net.ResolveTCPAddr("tcp4", destination)
@@ -112,40 +107,23 @@ func handle(sourceConn net.Conn, bindPort int, destination string) {
 	}
 
 	bridge := &Bridge{
-		OuterSelfConn: sourceConn,
-		SelfDestConn:  destConn,
-		Source: &Addr{
-			Ip:   sourceConn.LocalAddr().String(),
-			Port: bindPort,
-		},
-		Destination: &Addr{
-			Ip:   destination_ip,
-			Port: destination_port,
-		},
-		WriteToDestination: make(chan []byte, 1),
-		WriteToSource:      make(chan []byte, 1),
+		Source: sourceConn,
+		Destination: destConn,
 	}
-	connMap[sourceConn] = bridge
+	ConnMap[sourceConn] = bridge
 
 	go func() {
-		buf := make([]byte, 2048)
-		wr, er := io.CopyBuffer(sourceConn, destConn, buf)
-		logrus.Infof("toDestConn WR,Err => %v, %v", wr, er)
-		if er != nil {
-			releaseConn(sourceConn,destConn)
-		}
+		defer releaseConn(sourceConn, destConn)
+		buf := make([]byte, 8)
+		io.CopyBuffer(sourceConn, destConn, buf)
 	}()
 
 	go func() {
-		buf := make([]byte, 2048)
-		wr, er := io.CopyBuffer(destConn, sourceConn, buf)
-		logrus.Infof("toSourceConn WR,Err => %v, %v", wr, er)
-		if er != nil {
-			releaseConn(sourceConn,destConn)
-		}
+		defer releaseConn(sourceConn,destConn)
+		buf := make([]byte, 8)
+		io.CopyBuffer(destConn, sourceConn, buf)
 	}()
 }
-
 
 func checkError(err error) bool {
 	if err != nil {
@@ -167,10 +145,13 @@ func getBindPortAndProxypassPort(p *ProxyConf) (bindPort int, destination string
 	return
 }
 
-func releaseConn(sourceConn,destConn net.Conn)  {
+func releaseConn(sourceConn, destConn net.Conn) {
 	defer lock.Unlock()
 	lock.Lock()
-	sourceConn.Close()
-	destConn.Close()
-	delete(connMap,sourceConn)
+	if ConnMap[sourceConn] != nil {
+		sourceConn.Close()
+		destConn.Close()
+		delete(ConnMap, sourceConn)
+		logrus.Infof("release connect => %v", sourceConn.RemoteAddr().String())
+	}
 }

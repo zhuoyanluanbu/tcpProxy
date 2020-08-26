@@ -1,0 +1,421 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<style type="text/css">
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    td ,th {
+        padding: 0.5em 0.1em;
+        border: rgba(136, 136, 136, 0.49) 1px solid;
+        border-left: none;
+        border-right: none;
+    }
+
+    thead {
+        background: rgba(136, 136, 136, 0.28);
+    }
+
+    button {
+        cursor: pointer;
+        height: 1.8em;
+    }
+
+    input {
+        font-size: 1em;
+        border: rgba(132, 132, 132, 0.88) 1px solid;
+        border-radius: 0.3em;
+        padding: 0.2em 0.3em;
+        color: rgba(87, 87, 87, 0.98);
+    }
+
+    .container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-around;
+        padding: 4.9em 0;
+    }
+
+    .baseDiv {
+        width: 50%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .tableDiv {
+        width: 90%;
+        /*margin-left: 15%;*/
+    }
+
+
+    .dataTable {
+        text-align: center;
+        width: 100%;
+        border: rgba(136, 136, 136, 0.49) 1px solid;
+        border-collapse: collapse;
+    }
+
+    .leftDiv {
+        height: 100%;
+    }
+
+    .rightDiv {
+        height: 100%;
+    }
+
+
+    .saveBtn {
+        border: 0px;
+        background-color: dodgerblue;
+        color: white;
+        font-size: 0.6em;
+        border-radius: 0.2em;
+        padding: 0.3em 0.8em 0.4em 0.8em;
+        box-shadow: 1px 1px 3px #888888;
+        margin: 0 0.3em;
+        height: 2.6em;
+    }
+
+    .manageBtn {
+        border: 0px;
+        background-color: dodgerblue;
+        color: white;
+        border-radius: 0.3em;
+        padding: 0.2em 0.8em;
+        box-shadow: 1px 1px 3px #888888;
+    }
+
+    .alertDiv {
+        box-shadow: 5px 5px 5px #888888;
+        border-radius: 1em;
+        margin-top: 15%;
+        width: 40%;
+        height: 40%;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+    }
+
+    .topDiv {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        display: none;
+        justify-content: center;
+        align-items: flex-start;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 99;
+    }
+
+    .sysTitle {
+        width: 100%;
+        height: 3.2em;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        z-index: 99;
+        color: white;
+        font-size: 1.2em;
+        background: white;
+        border-bottom: rgba(132, 132, 132, 0.58) 1px solid;
+        box-shadow: 1px 1px 8px #848484;
+    }
+    .conns {
+        color: #ff7569;
+        width: 50%;
+        text-align: center;
+    }
+    .sep-line {
+        height: 100%;
+        background: rgba(136, 136, 136, 0.14);
+        /*width: 1px;*/
+    }
+    .configs {
+        width: 50%;
+        text-align: center;
+        color: cornflowerblue;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /*padding-left: 2em;*/
+    }
+
+    .sysBtns {
+        padding: 1em 1em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+</style>
+<body>
+
+<div class="sysTitle">
+    <div class="conns">当前连接</div>
+    <div class="sep-line"></div>
+    <div class="configs">
+        <div>配置信息</div>
+        <div class="sysBtns">
+            <button type="button" class="saveBtn" onclick="addData()" style="background-color: green;"
+                    id="addBtn">增加</button>
+            <button class="saveBtn" onclick="uploadFile()" id="uploadBtn">上传证书</button>
+            <button class="saveBtn" onclick="startRun()" id="applyBtn">启动</button>
+            <button class="saveBtn" onclick="stopRun()" style="background-color: red;display: none;margin-left: 17%"
+                    id="stopBtn">结束</button>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <div class="baseDiv leftDiv">
+        <div class="tableDiv">
+            <table class="dataTable" id="leftTable">
+                <thead>
+                <th width="10%">加密</th>
+                <th >监听端口</th>
+                <th >目的地址</th>
+                <th >选择证书</th>
+                <th >删除</th>
+                </thead>
+                <tbody id="leftTbody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="baseDiv rightDiv">
+        <div class="tableDiv">
+            <table class="dataTable" id="rightTable">
+                <thead>
+                <th >源</th>
+                <th >&nbsp;</th>
+                <th >目的</th>
+                <th >操作</th>
+                </thead>
+                <tbody id="rightTbody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="topDiv">
+    <div class="alertDiv" id="upload-alert">
+        <form style="width: 80%">
+            <table style="border-collapse:separate; border-spacing:0px 10px;text-align: center;width: 100%">
+                <tr>
+                    <td>
+                        上传证书:
+                    </td>
+                    <td>
+                        <input type="file">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        上传密钥:
+                    </td>
+                    <td>
+                        <input type="file">
+                    </td>
+                </tr>
+            </table>
+            <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">
+                <button class="saveBtn" type="button" style="margin-right: 2em" onclick="uploadFile()">确认</button>
+
+                <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="alertDiv" id="choose-alert">
+        <form style="width: 60%">
+            <input type="hidden" id="dataSort">
+            <table style="border-collapse:separate; border-spacing:0px 10px;text-align: left;width: 100%"
+                   id="choose-file-table">
+                <tr>
+                    <td></td>
+                    <td>
+                        文件名
+                    </td>
+                </tr>
+
+            </table>
+            <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">
+                <button type="button" class="saveBtn" style="margin-right: 2em" onclick="bindFile()">确认</button>
+
+                <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    var testData = [{'port1': 1, 'ip': '123.133.434', 'port2': 123, 'id': 1},
+        {'port1': 2, 'ip': '123.143.424', 'port2': 123343, 'id': 2}];
+
+    var testData2 = [{'port1': 1, 'ip1': '123.133.434', 'port2': 123, 'id': 1, 'ip2': '123.32.23.4'},
+        {'port1': 2, 'ip1': '123.143.424', 'port2': 123343, 'id': 2, 'ip2': '123.43.43.4'}];
+
+    var file_test = ['1233', '1231313'];
+
+    var size = 0;
+
+    var removeArr = [];
+
+    $(function () {
+        /*增删改查页面加载*/
+        var html = '';
+        for (var i = 0; i < testData.length; i++) {
+            html += '<tr><td><input type="checkbox" class="encode-checkbox"></td>' +
+                '<td><input onblur="updatePort1(' + i + ',this)" id="port1-' + i + '" style="width: 3.8em;text-align: center" type="number" value="' + testData[i].port1 + '"></td>' +
+                '<td style="text-align: center;"><input style="width: 8em" id="ip-' + i + '" onblur="updateIp(' + i + ',this)" type="text" value="' + testData[i].ip + '">' + ' : <input id="port2-' + i + '" onblur="updatePort2(' + i + ',this)" style="width: 3.8em" type="number" value="' + testData[i].port2 + '"></span></td>' +
+                '<td><button class="manageBtn" type="button" onclick="chooseFile(' + i + ')">选择证书</button></td><td><button class="manageBtn" style="background-color: #FF6F82" type="button" onclick="deleteData(this,' + i + ')">删除</button></td></tr>';
+        }
+        $('#leftTbody').html(html);
+        size = testData.length;
+
+        /*删查页面加载*/
+        var html1 = '';
+        for (var i = 0; i < testData2.length; i++) {
+            html1 += '<tr><td><span>' + testData2[i].ip1 + '</span>' + ' : <span>' + testData2[i].port1 + '</span></td>' +
+                '<td><span> → </span></td>' +
+                '<td><span>' + testData2[i].ip2 + '</span>' + ' : <span>' + testData2[i].port2 + '</span></td>' +
+                '<td><button class="manageBtn" style="background-color: #ff6f82" type="button" onclick="deleteData(this)">drop</button></td></tr>';
+        }
+        $('#rightTbody').html(html1);
+
+        /*绑定文件页面加载*/
+        var fileHtml = '';
+        for (var i in file_test) {
+            fileHtml += '<tr><td><input type="checkbox" name="file-checkbox" value="' + file_test[i] + '"><span>' + file_test[i] + '</span></td></tr>';
+        }
+        $('#choose-file-table').html(fileHtml);
+
+    });
+
+    function deleteData(btn, sort) {
+        if (flag) {
+            $(btn).parent().parent().remove();
+            removeArr.push(sort);
+        }
+
+    }
+
+
+    /*增加数据*/
+    function addData() {
+        var html = '<tr><td><input type="checkbox" class="encode-checkbox"></td>' +
+            '<td><input onblur="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 50%" type="number" ></td>' +
+            '<td style="text-align: left"><input id="ip-' + size + '" onblur="updateIp(' + size + ',this)" type="text" >' + ' : <input id="port2-' + size + '" onblur="updatePort2(' + size + ',this)" style="width: 20%" type="number" ></span></td>' +
+            '<td><button class="manageBtn" type="button" onclick="chooseFile(' + size + ')">选择证书</button></td><td><button class="manageBtn" style="background-color: #ff8787" type="button" onclick="deleteData(this,' + size + ')">删除</button></td></tr>';
+        $('#leftTbody').append(html);
+        size++;
+        var arr = {'port1': null, 'ip': null, 'port2': null};
+        testData.push(arr);
+    }
+
+    /*上传文件*/
+    function uploadFile() {
+        $('.topDiv').css('display', 'flex');
+        $('#upload-alert').css('display', 'flex');
+        $('#choose-alert').css('display', 'none');
+    }
+
+    function hideAlert() {
+        $('.topDiv').css('display', 'none');
+    }
+
+    var flag = true;
+
+    function startRun() {
+        flag = false;
+        $('#applyBtn').css('display', 'none');
+        $('#addBtn').css('display', 'none');
+        $('#stopBtn').css('display', 'inline');
+        $('#uploadBtn').css('display', 'none');
+
+
+        if (removeArr.length > 0) {
+            for (var i = 0; i < removeArr.length; i++) {
+                testData.splice(removeArr[i], 1);
+            }
+        }
+
+        console.log(testData);
+    }
+
+    function stopRun() {
+        flag = true;
+        $('#applyBtn').css('display', 'inline');
+        $('#addBtn').css('display', 'inline');
+        $('#stopBtn').css('display', 'none');
+        $('#uploadBtn').css('display', 'inline');
+
+    }
+
+    function updatePort1(sort, text) {
+        if (flag) {
+            testData[sort].port1 = $(text).val();
+        }
+    }
+
+    function updateIp(sort, text) {
+        if (flag) {
+            testData[sort].ip = $(text).val();
+        }
+
+    }
+
+    function updatePort2(sort, text) {
+        if (flag) {
+            testData[sort].port2 = $(text).val();
+        }
+    }
+
+
+    function chooseFile(sort) {
+        if (flag) {
+            $('.topDiv').css('display', 'flex');
+            $('#choose-alert').css('display', 'flex');
+            $('#upload-alert').css('display', 'none');
+
+            $('#dataSort').val(sort);
+        } else return;
+
+    }
+
+    /*绑定文件*/
+    function bindFile() {
+        var sort = $('#dataSort').val();
+        var files = [];
+        $('input[name="file-checkbox"]:checked').each(function () {
+            console.log($(this).val());
+            files.push($(this).val());
+        });
+        testData[sort].files = files;
+        hideAlert();
+    }
+</script>
+</html>
