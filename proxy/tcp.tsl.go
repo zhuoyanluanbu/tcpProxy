@@ -23,7 +23,7 @@ type Bridge struct {
 
 var listeners = make([]net.Listener, 0)
 var ConnMap = make(map[net.Conn]*Bridge)
-var lock = &sync.Mutex{}
+var Lock = &sync.Mutex{}
 
 var IsStart = false
 
@@ -91,8 +91,8 @@ func bindProxy(p *ProxyConf) {
 * proxyPort 需要转发的目的端口
 */
 func handle(sourceConn net.Conn, destination string) {
-	defer lock.Unlock()
-	lock.Lock()
+	defer Lock.Unlock()
+	Lock.Lock()
 
 	//destination_ip_port := strings.Split(destination, ":")
 	//destination_ip := destination_ip_port[0]
@@ -113,13 +113,13 @@ func handle(sourceConn net.Conn, destination string) {
 	ConnMap[sourceConn] = bridge
 
 	go func() {
-		defer releaseConn(sourceConn, destConn)
+		defer ReleaseConn(sourceConn, destConn)
 		buf := make([]byte, 8)
 		io.CopyBuffer(sourceConn, destConn, buf)
 	}()
 
 	go func() {
-		defer releaseConn(sourceConn,destConn)
+		defer ReleaseConn(sourceConn,destConn)
 		buf := make([]byte, 8)
 		io.CopyBuffer(destConn, sourceConn, buf)
 	}()
@@ -145,9 +145,9 @@ func getBindPortAndProxypassPort(p *ProxyConf) (bindPort int, destination string
 	return
 }
 
-func releaseConn(sourceConn, destConn net.Conn) {
-	defer lock.Unlock()
-	lock.Lock()
+func ReleaseConn(sourceConn, destConn net.Conn) {
+	defer Lock.Unlock()
+	Lock.Lock()
 	if ConnMap[sourceConn] != nil {
 		sourceConn.Close()
 		destConn.Close()

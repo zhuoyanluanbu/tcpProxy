@@ -8,11 +8,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"tcpProxy/proxy"
 )
 
 type ConnDisplay struct {
-	ID   string `json:"id"`
+	ID     string `json:"id"`
 	Remote string `json:"remote"`
 	Local  string `json:"local"`
 }
@@ -22,7 +23,10 @@ var httpServer = http.Server{
 }
 
 func TplStart() {
-	var index = func (w http.ResponseWriter, r *http.Request) {
+	http.Handle("/static/",
+		http.StripPrefix("/static/",http.FileServer(http.Dir("./html/static")) ),
+	)
+	var index = func(w http.ResponseWriter, r *http.Request) {
 		t1, err := template.ParseFiles("./html/index.html")
 		if err != nil {
 			panic(err)
@@ -38,11 +42,19 @@ func ApiStart() {
 		writer.Write([]byte("Welcome to Golang"))
 	})
 
+	//获取配置
+	http.HandleFunc("/getConfig", func(writer http.ResponseWriter, request *http.Request) {
+		jsonB, _ := json.Marshal(proxy.ProxyConfig)
+		writer.Write(jsonB)
+	})
+
 	//获取链接
 	http.HandleFunc("/getAliveConns", func(writer http.ResponseWriter, request *http.Request) {
 		connDisplays := make([]*ConnDisplay, 0)
 		for k, v := range proxy.ConnMap {
-			mem_addr := fmt.Sprintf("%v", &k)
+			mem_addr := fmt.Sprintf("%v", *&k)
+			mem_addr = strings.ReplaceAll(mem_addr,"&{{","")
+			mem_addr = strings.ReplaceAll(mem_addr,"}}","")
 			cd := &ConnDisplay{
 				ID:   mem_addr,
 				Remote:	v.Source.RemoteAddr().String(),
@@ -53,6 +65,23 @@ func ApiStart() {
 		jsonB, _ := json.Marshal(connDisplays)
 		writer.Write(jsonB)
 	})
+
+	//踢掉某个链接
+	http.HandleFunc("/dropConn", func(writer http.ResponseWriter, request *http.Request) {
+		id := request.URL.Query().Get("id")
+		func(mem string){
+			for k, v := range proxy.ConnMap {
+				mem_addr := fmt.Sprintf("%v", *&k)
+				mem_addr = strings.ReplaceAll(mem_addr,"&{{","")
+				mem_addr = strings.ReplaceAll(mem_addr,"}}","")
+				if mem == mem_addr {
+					proxy.ReleaseConn(v.Source,v.Destination)
+				}
+			}
+		}(id)
+		writer.Write([]byte("ok"))
+	})
+
 
 	//获取证书文件夹下面的文件
 	http.HandleFunc("/getCertFileNames", func(writer http.ResponseWriter, request *http.Request) {
@@ -67,13 +96,13 @@ func ApiStart() {
 		fileKey := "file"
 		filename := request.Header.Get("filename")
 
-		for _,n := range getFileNames("./certs") {
+		for _, n := range getFileNames("./certs") {
 			if n == filename {
 				os.Remove(n)
 			}
 		}
-		fileDest,_ := os.OpenFile(filename,os.O_RDWR|os.O_CREATE,777)
-		fileSource,_,err := request.FormFile(fileKey)
+		fileDest, _ := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 777)
+		fileSource, _, err := request.FormFile(fileKey)
 		defer fileSource.Close()
 		if err != nil {
 			return
@@ -84,16 +113,14 @@ func ApiStart() {
 		writer.Write([]byte("ok"))
 	})
 
-
-
 	TplStart()
 	httpServer.ListenAndServe()
 }
 
-func getFileNames(path string) []string  {
+func getFileNames(path string) []string {
 	names := []string{}
-	files,_ := ioutil.ReadDir(path)
-	for _,f := range files {
+	files, _ := ioutil.ReadDir(path)
+	for _, f := range files {
 		names = append(names, f.Name())
 	}
 	return names
