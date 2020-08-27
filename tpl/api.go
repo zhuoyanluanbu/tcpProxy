@@ -4,12 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"tcpProxy/proxy"
 )
 
 type ConnDisplay struct {
-	Name   string `json:"name"`
+	ID   string `json:"id"`
 	Remote string `json:"remote"`
 	Local  string `json:"local"`
 }
@@ -41,7 +44,7 @@ func ApiStart() {
 		for k, v := range proxy.ConnMap {
 			mem_addr := fmt.Sprintf("%v", &k)
 			cd := &ConnDisplay{
-				Name:   mem_addr,
+				ID:   mem_addr,
 				Remote:	v.Source.RemoteAddr().String(),
 				Local: v.Destination.RemoteAddr().String(),
 			}
@@ -51,7 +54,47 @@ func ApiStart() {
 		writer.Write(jsonB)
 	})
 
-	TplStart()
+	//获取证书文件夹下面的文件
+	http.HandleFunc("/getCertFileNames", func(writer http.ResponseWriter, request *http.Request) {
+		names := getFileNames("./certs")
+		jsonB, _ := json.Marshal(names)
+		writer.Write(jsonB)
+	})
 
+	//上传证书
+	http.HandleFunc("/uploadCert", func(writer http.ResponseWriter, request *http.Request) {
+		request.ParseForm()
+		fileKey := "file"
+		filename := request.Header.Get("filename")
+
+		for _,n := range getFileNames("./certs") {
+			if n == filename {
+				os.Remove(n)
+			}
+		}
+		fileDest,_ := os.OpenFile(filename,os.O_RDWR|os.O_CREATE,777)
+		fileSource,_,err := request.FormFile(fileKey)
+		defer fileSource.Close()
+		if err != nil {
+			return
+		}
+		if _, err := io.Copy(fileDest, fileSource); err != nil {
+			return
+		}
+		writer.Write([]byte("ok"))
+	})
+
+
+
+	TplStart()
 	httpServer.ListenAndServe()
+}
+
+func getFileNames(path string) []string  {
+	names := []string{}
+	files,_ := ioutil.ReadDir(path)
+	for _,f := range files {
+		names = append(names, f.Name())
+	}
+	return names
 }
