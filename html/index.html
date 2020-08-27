@@ -14,7 +14,7 @@
         padding: 0;
     }
 
-    td ,th {
+    .dataTable td ,th {
         padding: 0.5em 0.1em;
         border: rgba(136, 136, 136, 0.49) 1px solid;
         border-left: none;
@@ -190,7 +190,7 @@
         <div class="sysBtns">
             <button type="button" class="saveBtn" onclick="addData()" style="background-color: #3910ff;"
                     id="addBtn">＋增加</button>
-            <button class="saveBtn" onclick="uploadFile()" style="background-color: #9d89ff;" id="uploadBtn">上传证书️</button>
+            <button class="saveBtn" onclick="showUpload()" style="background-color: #9d89ff;" id="uploadBtn">上传证书️</button>
             <button class="saveBtn" onclick="startRun()" id="applyBtn">▶ 启动</button>
             <button class="saveBtn" onclick="stopRun()" style="background-color: #ff2482;display: block;"
                     id="stopBtn">■ 结束</button>
@@ -235,14 +235,14 @@
 </div>
 <div class="topDiv">
     <div class="alertDiv" id="upload-alert">
-        <form style="width: 80%">
-            <table style="border-collapse:separate; border-spacing:0px 10px;text-align: center;width: 100%">
+        <form style="width: 80%" enctype="multipart/form-data" id="fileForm">
+            <table style="border-collapse:separate; border-spacing:0px 10px;text-align: center;width: 100%;">
                 <tr>
                     <td>
                         上传证书:
                     </td>
                     <td>
-                        <input type="file">
+                        <input type="file" id="file1">
                     </td>
                 </tr>
                 <tr>
@@ -250,7 +250,7 @@
                         上传密钥:
                     </td>
                     <td>
-                        <input type="file">
+                        <input type="file" id="file2">
                     </td>
                 </tr>
             </table>
@@ -302,10 +302,22 @@
         /*增删改查页面加载*/
         var html = '';
         for (var i = 0; i < testData.length; i++) {
-            html += '<tr><td><input type="checkbox" class="encode-checkbox"></td>' +
-                '<td><input onblur="updatePort1(' + i + ',this)" id="port1-' + i + '" style="width: 3.8em;text-align: center" type="number" value="' + testData[i].port1 + '"></td>' +
-                '<td style="text-align: center;"><input style="width: 8em" id="ip-' + i + '" onblur="updateIp(' + i + ',this)" type="text" value="' + testData[i].ip + '">' + ' : <input id="port2-' + i + '" onblur="updatePort2(' + i + ',this)" style="width: 3.8em" type="number" value="' + testData[i].port2 + '"></span></td>' +
-                '<td><button class="manageBtn" type="button" onclick="chooseFile(' + i + ')">选择证书</button></td><td><button class="manageBtn" style="background-color: #c467ff" type="button" onclick="deleteData(this,' + i + ')">删除</button></td></tr>';
+            html += '<tr>' +
+                '<td><input type="checkbox" class="encode-checkbox"></td>' +
+                '<td>' +
+                '<input onblur="updatePort1(' + i + ',this)" id="port1-' + i + '" style="width: 3.8em;text-align: center" type="number" value="' + testData[i].port1 + '">' +
+                '</td>' +
+                '<td style="text-align: center;">' +
+                '<input style="width: 8em" id="ip-' + i + '" onblur="updateIp(' + i + ',this)" type="text" value="' + testData[i].ip + '">'
+                + ' : <input id="port2-' + i + '" onblur="updatePort2(' + i + ',this)" style="width: 3.8em" type="number" value="' + testData[i].port2 + '">' +
+                '</td>' +
+                '<td>' +
+                '<button class="manageBtn" type="button" onclick="chooseFile(' + i + ')">选择证书</button>' +
+                '</td>' +
+                '<td>' +
+                '<button class="manageBtn" style="background-color: #c467ff" type="button" onclick="deleteData(this,' + i + ')">删除</button>' +
+                '</td>' +
+                '</tr>';
         }
         $('#leftTbody').html(html);
         size = testData.length;
@@ -313,22 +325,36 @@
         /*删查页面加载*/
         var html1 = '';
         for (var i = 0; i < testData2.length; i++) {
-            html1 += '<tr><td><span>' + testData2[i].ip1 + '</span>' + ' : <span>' + testData2[i].port1 + '</span></td>' +
+            html1 += '<tr>' +
+                '<td>' +
+                '<span>' + testData2[i].ip1 + '</span>' + ' : <span>' + testData2[i].port1 + '</span>' +
+                '</td>' +
                 '<td><span> → </span></td>' +
-                '<td><span>' + testData2[i].ip2 + '</span>' + ' : <span>' + testData2[i].port2 + '</span></td>' +
-                '<td><button class="manageBtn" style="background-color: #ff6f82" type="button" onclick="deleteData(this)">drop</button></td></tr>';
+                '<td>' +
+                '<span>' + testData2[i].ip2 + '</spn>' + ' : <span>' + testData2[i].port2 + '</span>' +
+                '</td>' +
+                '<td>' +
+                '<button class="manageBtn" style="background-color: #ff6f82" type="button" onclick="drop(this,' + testData2[i].id + ')">drop</button>' +
+                '</td>' +
+                '</tr>';
         }
         $('#rightTbody').html(html1);
 
         /*绑定文件页面加载*/
         var fileHtml = '';
         for (var i in file_test) {
-            fileHtml += '<tr><td><input type="checkbox" name="file-checkbox" value="' + file_test[i] + '"><span>' + file_test[i] + '</span></td></tr>';
+            fileHtml += '<tr>' +
+                '<td>' +
+                '<input type="checkbox" name="file-checkbox" value="' + file_test[i] + '">' +
+                '<span>' + file_test[i] + '</span>' +
+                '</td>' +
+                '</tr>';
         }
         $('#choose-file-table').html(fileHtml);
-
+        a
     });
 
+    /*删除缓存中的文件*/
     function deleteData(btn, sort) {
         if (flag) {
             $(btn).parent().parent().remove();
@@ -337,24 +363,79 @@
 
     }
 
+    /*调用接口删除文件*/
+    function drop(btn, id) {
+        if (flag){
+            $(btn).parent().parent().remove();
+        }
+
+    }
+
 
     /*增加数据*/
     function addData() {
-        var html = '<tr><td><input type="checkbox" class="encode-checkbox"></td>' +
-            '<td><input onblur="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 3.8em" type="number" ></td>' +
-            '<td style="text-align: center"><input style="width:8em;" id="ip-' + size + '" onblur="updateIp(' + size + ',this)" type="text" >' + ' : <input id="port2-' + size + '" onblur="updatePort2(' + size + ',this)" style="width: 3.8em" type="number" ></span></td>' +
-            '<td><button class="manageBtn" type="button" onclick="chooseFile(' + size + ')">选择证书</button></td><td><button class="manageBtn" style="background-color: #c467ff" type="button" onclick="deleteData(this,' + size + ')">删除</button></td></tr>';
+        var html = '<tr>' +
+            '<td>' +
+            '<input type="checkbox" class="encode-checkbox">' +
+            '</td>' +
+            '<td>' +
+            '<input onblur="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 3.8em" type="number" >' +
+            '</td>' +
+            '<td style="text-align: center">' +
+            '<input style="width:8em;" id="ip-' + size + '" onblur="updateIp(' + size + ',this)" type="text" >'
+            + ' : <input id="port2-' + size + '" onblur="updatePort2(' + size + ',this)" style="width: 3.8em" type="number" >' +
+            '</td>' +
+            '<td>' +
+            '<button class="manageBtn" type="button" onclick="chooseFile(' + size + ')">选择证书</button><' +
+            '/td>' +
+            '<td>' +
+            '<button class="manageBtn" style="background-color: #c467ff" type="button" onclick="deleteData(this,' + size + ')">删除</button>' +
+            '</td>' +
+            '</tr>';
         $('#leftTbody').append(html);
         size++;
         var arr = {'port1': null, 'ip': null, 'port2': null};
         testData.push(arr);
     }
 
-    /*上传文件*/
-    function uploadFile() {
+    function showUpload() {
         $('.topDiv').css('display', 'flex');
         $('#upload-alert').css('display', 'flex');
         $('#choose-alert').css('display', 'none');
+    }
+
+    /*上传文件*/
+    function uploadFile() {
+
+        var files1 = $('#file1')[0].files; //获取上传的文件列表
+        var files2 = $('#file2')[0].files; //获取上传的文件列表
+
+        if (files1.length > 0){
+            var formData1 = new FormData(); //新建一个formData对象
+            formData1.append("file", files1[0]); //append()方法添加字段
+            upload(formData1,files1[0].name);
+        }
+
+        if (files2.length > 0){
+            var formData2 = new FormData(); //新建一个formData对象
+            formData2.append("file", files2[0]); //append()方法添加字段
+            upload(formData2,files2[0].name);
+        }
+
+
+    }
+
+    function upload(formData,filename) {
+        $.ajax({
+            url: '/test',
+            type:  'POST',
+            data: formData,
+            processData: false,
+            headers:{'Content-Type':'application/json;charset=utf8','filename':filename},
+            success: function (data) {
+
+            }
+        })
     }
 
     function hideAlert() {
