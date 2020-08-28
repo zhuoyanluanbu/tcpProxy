@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
+	"time"
 )
 
 type ProxyConf struct {
@@ -21,8 +22,12 @@ type TlsConf struct {
 var configFilePath = "./config.json"
 var ProxyConfig = make([]*ProxyConf,0)
 
+func ClearProxyConfig()  {
+	ProxyConfig = make([]*ProxyConf,0)
+}
+
 func SaveToConfig() {
-	f, err := os.OpenFile(configFilePath, os.O_RDWR|os.O_CREATE, 0777)
+	f, err := os.OpenFile(configFilePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	defer f.Close()
 	if err != nil {
 		logrus.Error(err.Error())
@@ -30,6 +35,7 @@ func SaveToConfig() {
 
 	b,_ := json.Marshal(&ProxyConfig)
 	_, err = f.Write([]byte(""))
+	time.Sleep(1000*time.Millisecond)
 	_, err = f.Write(b)
 	if err != nil {
 		logrus.Error(err.Error())

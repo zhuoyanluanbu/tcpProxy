@@ -9,6 +9,5 @@ import (
 func main() {
 	tool.InitYmlConfig()
 	proxy.LoadFromConfig()
-	proxy.Start()
 	tpl.ApiStart()
 }

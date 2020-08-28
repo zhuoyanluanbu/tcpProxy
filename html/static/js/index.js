@@ -28,7 +28,7 @@ function loadConfigs() {
         html +=
             '<tr>' +
                 '<td>' +
-                    '<input type="checkbox" class="encode-checkbox"'+ checked +'></td>' +
+                    '<input onblur="updateCheck(' + i + ',this)" type="checkbox" class="encode-checkbox"'+ checked +'></td>' +
                 '<td>' +
                     '<input onblur="updatePort1(' + i + ',this)" id="port1-' + i + '" style="width: 3.8em;text-align: center" type="number" value="' + td.port1 + '">' +
                 '</td>' +
@@ -154,7 +154,7 @@ function loadConns() {
             '<span>' + testData2[i].port2 + '</span>' +
             '</td>' +
             '<td>' +
-            '<button class="manageBtn" style="background-color: #ff6f82" type="button" onclick="drop(this,\'' + testData2[i].id + '\')">drop</button>' +
+            '<button class="manageBtn" style="background-color: #ff6f82" type="button" onclick="drop(this,\'' + testData2[i].id + '\')">踢掉</button>' +
             '</td>' +
             '</tr>';
     }
@@ -239,11 +239,10 @@ loadFilesNamesFromApi()
 
 /*删除缓存中的文件*/
 function deleteData(btn, sort) {
-    if (flag) {
+    if (!flag) {
         $(btn).parent().parent().remove();
         removeArr.push(sort);
     }
-
 }
 
 /*调用接口删除文件*/
@@ -265,13 +264,18 @@ function drop(btn, id) {
 
 /*增加数据*/
 function addData() {
+    if (flag) {
+        alert("程序运行中，请先停止！")
+        return
+    }
+    if (!checkInput()) return
     var html =
         '<tr>' +
         '<td>' +
         '<input type="checkbox" class="encode-checkbox">' +
         '</td>' +
         '<td>' +
-        '<input onblur="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 3.8em" type="number" />' +
+        '<input onblur="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 3.8em;text-align:center" type="number" />' +
         '</td>' +
         '<td style="text-align: center">' +
         '<input style="width:8em;" id="ip-' + size + '" onblur="updateIp(' + size + ',this)" type="text" />' +
@@ -287,8 +291,16 @@ function addData() {
         '</tr>';
     $('#leftTbody').append(html);
     size++;
-    var arr = {'port1': null, 'ip': null, 'port2': null};
-    testData.push(arr);
+    if (!checkInput()) return
+    var obj = {
+        port1:0,
+        ip:"",
+        port2: 0,
+        tls: false,
+        crtPath: "",
+        keyPath: ""
+    }
+    testData.push(obj)
 }
 
 function showUpload() {
@@ -332,48 +344,121 @@ function hideAlert() {
     $('.topDiv').css('display', 'none');
 }
 
-var flag = true;
+var flag = false;
+
+function getRunState() {
+    $.ajax({
+        url: '/runState',
+        success: function (res){
+            if (res == 'true') {
+                flag = true
+                $('#applyBtn').hide()
+                $('#stopBtn').show();
+            }else {
+                flag = false;
+                $('#applyBtn').show();
+                $('#stopBtn').hide();
+            }
+        },
+        error: function (res) {
+        }
+    })
+}
+getRunState()
 
 function startRun() {
-    flag = false;
-    $('#applyBtn').css('display', 'none');
-    $('#addBtn').css('display', 'none');
-    $('#stopBtn').css('display', 'inline');
-    $('#uploadBtn').css('display', 'none');
+    if (!flag) {
+        if (removeArr.length > 0) {
+            for (var i = 0; i < removeArr.length; i++) {
+                testData.splice(removeArr[i], 1);
+            }
+        }
+        if (!checkInput()) return
+        console.log(testData);
+        $.ajax({
+            url: '/startup',
+            type: 'post',
+            data: JSON.stringify(testData),
+            success: function (res){
+                alert(res)
+                flag = true;
+                $('#applyBtn').hide()
+                $('#stopBtn').show();
+            },
+            error: function (err) {
+                alert(JSON.stringify(err))
+            }
+        })
+    }
+}
 
-    if (removeArr.length > 0) {
-        for (var i = 0; i < removeArr.length; i++) {
-            testData.splice(removeArr[i], 1);
+function checkInput() {
+    for (var i=0;i<testData.length;i++){
+        var t = testData[i]
+        if (t.port1 <= 0){
+            alert("请检查第["+(i+1)+"]排的监听端口")
+            return false
+        }
+        if (t.port2 <= 0){
+            alert("请检查第["+(i+1)+"]排的目的地址端口")
+            return false
+        }
+
+        if ( t.ip != 'localhost' && (t.ip == "" || t.ip.split(".").length!=4)){
+            alert("请检查第["+(i+1)+"]排的目的地址ip")
+            return false
+        }
+
+        if (t.port1 == t.port2 && (t.ip == 'localhost' || t.ip == '127.0.0.1')) {
+            alert("请检查第["+(i+1)+"]排的数据，不能和本机的监听端口相同")
+            return false
         }
     }
-
-    console.log(testData);
+    return true
 }
 
 function stopRun() {
-    flag = true;
-    $('#applyBtn').css('display', 'inline');
-    $('#addBtn').css('display', 'inline');
-    $('#stopBtn').css('display', 'none');
-    $('#uploadBtn').css('display', 'inline');
+    if (flag){
+        $.ajax({
+            url: '/shutdown',
+            success: function (res){
+                flag = false;
+                $('#applyBtn').show();
+                $('#stopBtn').hide();
+            },
+            error: function (res) {
+            }
+        })
+    }
+}
 
+function updateCheck(sort, text) {
+    if (!flag) {
+        testData[sort].tls = $(text).prop('checked');
+    }
 }
 
 function updatePort1(sort, text) {
-    if (flag) {
+    for (var t in testData){
+        if ($(text).val() == testData[t].port1) {
+            alert("监听端口重复")
+            $(text).val('')
+            return
+        }
+    }
+    if (!flag) {
         testData[sort].port1 = $(text).val();
     }
 }
 
 function updateIp(sort, text) {
-    if (flag) {
+    if (!flag) {
         testData[sort].ip = $(text).val();
     }
-
 }
 
 function updatePort2(sort, text) {
-    if (flag) {
+    if (!flag) {
         testData[sort].port2 = $(text).val();
     }
 }
@@ -381,7 +466,7 @@ function updatePort2(sort, text) {
 
 function chooseFile(sort) {
     loadFilesNames()
-    if (flag) {
+    if (!flag) {
         $('.topDiv').css('display', 'flex');
         $('#choose-alert').css('display', 'flex');
         $('#upload-alert').css('display', 'none');
@@ -393,11 +478,33 @@ function chooseFile(sort) {
 /*绑定文件*/
 function bindFile() {
     var sort = $('#dataSort').val();
-    var files = [];
-    $('input[name="file-checkbox"]:checked').each(function () {
-        console.log($(this).val());
-        files.push($(this).val());
+    var files = {crtPath:"",keyPath:""};
+
+    var checkedFiles = $('input[name="file-checkbox"]:checked')
+    if (checkedFiles.length > 2){
+        alert("只能选择一个key，一个pem")
+        return
+    }
+    checkedFiles.each(function () {
+        var name = $(this).val()
+        if (name.indexOf(".") > 0){
+            var sux = name.split(".")[1]
+            if (sux == "key"){
+                files.keyPath = name
+            }else if (sux == "pem") {
+                files.crtPath = name
+            }
+        }
     });
-    testData[sort].files = files;
+    if (files.keyPath == ""){
+        alert("请选择key")
+        return
+    }
+    if (files.crtPath == ""){
+        alert("请选择pem")
+        return
+    }
+    testData[sort].keyPath = files.keyPath;
+    testData[sort].crtPath = files.crtPath;
     hideAlert();
 }

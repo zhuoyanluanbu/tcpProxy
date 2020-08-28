@@ -18,6 +18,15 @@ type ConnDisplay struct {
 	Local  string `json:"local"`
 }
 
+type ProxyConfigVo struct {
+	Port1 string `json:"port1"`
+	Ip string `json:"ip"`
+	Port2 string	`json:"port2"`
+	Tls bool	`json:"tls"`
+	CrtPath string	`json:"crtPath"`
+	KeyPath string	`json:"keyPath"`
+}
+
 var httpServer = http.Server{
 	Addr: "127.0.0.1:8081",
 }
@@ -40,6 +49,46 @@ func ApiStart() {
 
 	http.HandleFunc("/hello", func(writer http.ResponseWriter, request *http.Request) {
 		writer.Write([]byte("Welcome to Golang"))
+	})
+
+	http.HandleFunc("/runState",func(writer http.ResponseWriter, request *http.Request) {
+		writer.Write([]byte(fmt.Sprintf("%v",proxy.IsStart)))
+	})
+
+	http.HandleFunc("/startup",func(writer http.ResponseWriter, request *http.Request) {
+		bf, _ := ioutil.ReadAll(request.Body)
+		pcvs := []*ProxyConfigVo{}
+		json.Unmarshal(bf,&pcvs)
+		proxy.ClearProxyConfig()
+		for _,po := range pcvs {
+			pc := &proxy.ProxyConf{
+				Source: fmt.Sprintf("%v",po.Port1),
+				Destination: fmt.Sprintf("%v:%v",po.Ip,po.Port2),
+				Tls: po.Tls,
+			}
+			if po.Tls {
+				pc.TlsCf = &proxy.TlsConf{
+					KeyPath: fmt.Sprintf("./certs/%v",po.KeyPath),
+					CrtPath: fmt.Sprintf("./certs/%v",po.CrtPath),
+				}
+			}
+			if po.KeyPath=="" || po.CrtPath == "" {
+				pc.Tls = false
+			}
+			proxy.ProxyConfig = append(proxy.ProxyConfig, pc)
+		}
+		if !proxy.IsStart {
+			proxy.SaveToConfig()
+			proxy.Start()
+		}
+		writer.Write([]byte("ok"))
+	})
+
+	http.HandleFunc("/shutdown",func(writer http.ResponseWriter, request *http.Request) {
+		if proxy.IsStart {
+			proxy.Stop()
+		}
+		writer.Write([]byte("ok"))
 	})
 
 	//获取配置

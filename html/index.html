@@ -8,21 +8,258 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 </head>
-<link rel="stylesheet"  type="text/css"  href="/static/css/index.css" >
-<body>
+{{/*<link rel="stylesheet"  type="text/css"  href="/static/css/index.css" >*/}}
+<style type="text/css">
+    body {
+        margin: 0;
+        padding: 0;
+        background-image: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598619415180&di=310297edfdd614e18ba3422d1fd7ecb4&imgtype=0&src=http%3A%2F%2Fb.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2F50da81cb39dbb6fdd30388e10b24ab18962b3798.jpg");
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+    }
 
+    .bg {
+        z-index: -99;
+        position: absolute;
+    }
+    .bg img{
+        opacity: 0.8;
+        filter: blur(2px);
+    }
+
+    .dataTable {
+        background-color: rgba(255, 255, 255, 0.6);
+    }
+    .dataTable td ,th {
+        padding: 0.5em 0.1em;
+        border: rgba(136, 136, 136, 0.36) 1px solid;
+        border-left: none;
+        border-right: none;
+    }
+
+    thead {
+        background: rgba(136, 136, 136, 0.22);
+    }
+
+    button {
+        cursor: pointer;
+        height: 1.8em;
+    }
+
+    input {
+        font-size: 1em;
+        border: rgba(0, 92, 249, 0.0) 1px solid;
+        border-radius: 0.3em;
+        padding: 0.2em 0.3em;
+        color: rgba(87, 87, 87, 0.98);
+        box-shadow: 1px 1px 5px rgba(0, 92, 249, 0.3) inset;
+    }
+
+    .container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-around;
+        padding: 4.9em 0;
+    }
+
+    .baseDiv {
+        width: 50%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .tableDiv {
+        width: 90%;
+        /*margin-left: 15%;*/
+    }
+
+
+    .dataTable {
+        text-align: center;
+        width: 100%;
+        border: rgba(136, 136, 136, 0.49) 1px solid;
+        border-collapse: collapse;
+    }
+
+    #rightTable thead {
+        background: #FF6F82;
+        color: white;
+    }
+    #leftTable thead {
+        background: cornflowerblue;
+        color: white;
+    }
+    #leftTable td,#leftTable th {
+        padding-right: 0.6em;
+    }
+
+
+    .leftDiv {
+        height: 100%;
+    }
+
+    .rightDiv {
+        height: 100%;
+    }
+
+    .manageBtn {
+        border: 0px;
+        background-color: dodgerblue;
+        color: white;
+        border-radius: 0.3em;
+        padding: 0.2em 0.8em;
+        box-shadow: 1px 1px 3px #888888;
+    }
+
+    .alertDiv {
+        box-shadow: 5px 5px 5px #888888;
+        border-radius: 1em;
+        margin-top: 15%;
+        width: 40%;
+        height: 40%;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+    }
+
+    .topDiv {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        display: none;
+        justify-content: center;
+        align-items: flex-start;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 99;
+    }
+
+    .sysTitle {
+        width: 100%;
+        height: 3.2em;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        z-index: 99;
+        color: white;
+        font-size: 1.2em;
+        border-bottom: rgba(132, 132, 132, 0.9) 1px solid;
+        /*box-shadow: 1px 1px 3px #dddddd;*/
+    }
+    .sysTitle-bg {
+        width: 100%;
+        height: 100%;
+        /*background: rgba(255,255,255,0.2);*/
+        position: absolute;
+        /*filter: blur(15px);*/
+        z-index: -2;
+    }
+    .conns {
+        color: #ff7569;
+        width: 50%;
+        text-align: center;
+    }
+    .icon-text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .title-icon {
+        width: 1.2em;
+        height: 1.2em;
+        margin-right: 0.33em;
+    }
+    .saveBtn {
+        background-color: dodgerblue;
+        color: white;
+        font-size: 0.6em;
+        border-radius: 0.22em;
+        padding: 0.5em 0.8em 0.5em 0.6em;
+        box-shadow: 1px 1px 3px #888888;
+        margin: 0 0.5em;
+        /*height: 2.0em;*/
+        font-size: 0.7em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .btn-icon {
+        width: 1em;
+        height: 1em;
+        margin-right: 0.3em;
+    }
+
+    .sep-line {
+        height: 100%;
+        background: rgba(136, 136, 136, 0.14);
+        /*width: 1px;*/
+    }
+    .configs {
+        width: 50%;
+        text-align: center;
+        color: cornflowerblue;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /*padding-left: 2em;*/
+    }
+
+    .sysBtns {
+        padding: 1em 1em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .alertDiv button {
+        background-color: #3910ff;
+        border: 0px;
+        border-radius: 0.3em;
+        padding: 1.2em 1.2em 1.3em 1.2em;
+    }
+</style>
+<body>
+<div class="bg">
+    {{/*<img src="/static/img/背景.jpeg" width="100%" height="100%"/>*/}}
+</div>
 <div class="sysTitle">
-    <div class="conns">当前连接</div>
+    <div class="sysTitle-bg"></div>
+    <div class="conns icon-text">
+        <img class="title-icon" src="/static/img/链接.png" />
+        <div>当前连接</div>
+    </div>
     <div class="sep-line"></div>
     <div class="configs">
-        <div>配置信息</div>
+        <div class="config-msg icon-text">
+            <img class="title-icon" src="/static/img/配置.png" />
+            <div>配置信息</div>
+        </div>
         <div class="sysBtns">
-            <button type="button" class="saveBtn" onclick="addData()" style="background-color: #3910ff;"
-                    id="addBtn">＋增加</button>
-            <button class="saveBtn" onclick="showUpload()" style="background-color: #9d89ff;" id="uploadBtn">上传证书️</button>
-            <button class="saveBtn" onclick="startRun()" id="applyBtn">▶ 启动</button>
-            <button class="saveBtn" onclick="stopRun()" style="background-color: #ff2482;display: block;"
-                    id="stopBtn">■ 结束</button>
+            <div class="saveBtn" onclick="addData()" style="background-color: #3910ff;" id="addBtn">
+                ＋ 增加
+            </div>
+            {{/*<button class="saveBtn" onclick="showUpload()" style="background-color: #9d89ff;" id="uploadBtn">上传证书️</button>*/}}
+            <div class="saveBtn" onclick="startRun()" id="applyBtn">
+                <img class="btn-icon" src="static/img/开始.png"  />
+                启动
+            </div>
+            <div class="saveBtn" onclick="stopRun()" style="background-color: #ff2482;display: none"
+                    id="stopBtn">
+                <img class="btn-icon" src="static/img/停止.png"  />
+                停止
+            </div>
         </div>
     </div>
 </div>
@@ -106,7 +343,6 @@
             </table>
             <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">
                 <button type="button" class="saveBtn" style="margin-right: 2em" onclick="bindFile()">确认</button>
-
                 <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>
             </div>
         </form>
