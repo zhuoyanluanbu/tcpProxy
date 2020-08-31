@@ -80,7 +80,7 @@ func bindProxy(p *ProxyConf) {
 	for {
 		conn, er := listener.Accept()
 		if er != nil {
-			continue
+			break
 		}
 		go handle(conn, destination)
 	}
