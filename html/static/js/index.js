@@ -380,10 +380,10 @@ function startRun() {
             type: 'post',
             data: JSON.stringify(testData),
             success: function (res){
-                alert(res)
                 flag = true;
                 $('#applyBtn').hide()
                 $('#stopBtn').show();
+                alert("...启动成功...")
             },
             error: function (err) {
                 alert(JSON.stringify(err))

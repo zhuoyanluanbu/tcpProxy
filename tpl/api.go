@@ -10,6 +10,7 @@ import (
 	"os"
 	"strings"
 	"tcpProxy/proxy"
+	"time"
 )
 
 type ConnDisplay struct {
@@ -28,7 +29,7 @@ type ProxyConfigVo struct {
 }
 
 var httpServer = http.Server{
-	Addr: "127.0.0.1:8081",
+	Addr: "127.0.0.1:18081",
 }
 
 func TplStart() {
@@ -45,7 +46,7 @@ func TplStart() {
 	http.HandleFunc("/index", index)
 }
 
-func ApiStart() {
+func ApiStart(complete func(string)) {
 
 	http.HandleFunc("/hello", func(writer http.ResponseWriter, request *http.Request) {
 		writer.Write([]byte("Welcome to Golang"))
@@ -68,9 +69,17 @@ func ApiStart() {
 			}
 			if po.Tls {
 				pc.TlsCf = &proxy.TlsConf{
-					KeyPath: fmt.Sprintf("./certs/%v",po.KeyPath),
-					CrtPath: fmt.Sprintf("./certs/%v",po.CrtPath),
+					KeyPath: po.KeyPath,
+					CrtPath: po.CrtPath,
 				}
+				if !strings.Contains(po.KeyPath,"./certs") {
+					pc.TlsCf.KeyPath = fmt.Sprintf("./certs/%v",po.KeyPath)
+
+				}
+				if !strings.Contains(po.KeyPath,"./certs") {
+					pc.TlsCf.CrtPath = fmt.Sprintf("./certs/%v",po.CrtPath)
+				}
+
 			}
 			if po.KeyPath=="" || po.CrtPath == "" {
 				pc.Tls = false
@@ -163,7 +172,14 @@ func ApiStart() {
 	})
 
 	TplStart()
+
+	go func() {
+		time.Sleep(time.Second*1)
+		complete(fmt.Sprintf("http://%v/index",httpServer.Addr))
+	}()
+
 	httpServer.ListenAndServe()
+
 }
 
 func getFileNames(path string) []string {
