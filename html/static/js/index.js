@@ -34,8 +34,8 @@ function loadConfigs() {
                 '</td>' +
                 '<td style="text-align: center;">' +
                     '<input style="width: 8em" id="ip-' + i + '" onblur="updateIp(' + i + ',this)" type="text" value="' + td.ip + '"/>' +
-                    ' : ' +
-                    '<input id="port2-' + i + '" onblur="updatePort2(' + i + ',this)" style="width: 3.8em" type="number" value="' + td.port2 + '"/>' +
+                    // ' : ' +
+                    // '<input id="port2-' + i + '" onblur="updatePort2(' + i + ',this)" style="width: 3.8em" type="number" value="' + td.port2 + '"/>' +
                 '</td>' +
                 '<td>' +
                     // '<div style="font-size: 0.4em;">' +
@@ -45,7 +45,7 @@ function loadConfigs() {
                     '<button class="manageBtn" type="button" onmouseleave="hideBindedCerts()" onmouseover="showBindedCerts('+i+')" onclick="chooseFile(' + i + ')">选择证书</button>' +
                 '</td>' +
                 '<td>' +
-                    '<button class="manageBtn" style="background-color: #c467ff" type="button" onclick="deleteData(this,' + i + ')">删除</button>' +
+                    '<button class="manageBtn" style="background-color: #d35400" type="button" onclick="deleteData(this,' + i + ')">删除</button>' +
                 '</td>' +
             '</tr>';
     }
@@ -103,37 +103,37 @@ function loadConfigsFromApi() {
     $.ajax({
         url: '/getConfig',
         success: function(res){
-            testData = []
-            res = JSON.parse(res)
+            testData = [];
+            res = JSON.parse(res);
             for (var f in res){
-                var data = res[f]
-                var source = data.source
-                var destination = data.destination
-                var port1 = source.split(":")[0]
-                var ip = destination.split(":")[0]
-                var port2 = destination.split(":")[1]
-                var tls = data.tls
-                var crtPath = ''
-                var keyPath = ''
+                var data = res[f];
+                var source = data.source;
+                var destination = data.destinations;
+                var port1 = source.split(":")[0];
+                var ip = destination;
+                // var port2 = destination.split(":")[1]
+                var tls = data.tls;
+                var crtPath = '';
+                var keyPath = '';
                 if (tls) {
-                    crtPath = data.tlsCf.crtPath
-                    keyPath = data.tlsCf.keyPath
+                    crtPath = data.tlsCf.crtPath;
+                    keyPath = data.tlsCf.keyPath;
                 }
                 var obj = {
                     port1:port1,
                     ip:ip,
-                    port2: port2,
+                    // port2: port2,
                     tls: tls,
                     crtPath: crtPath,
                     keyPath: keyPath
-                }
+                };
                 testData.push(obj)
             }
             loadConfigs()
         }
     })
 }
-loadConfigsFromApi()
+loadConfigsFromApi();
 
 //----------------------------------------------------------------------------------------
 //-------------------------------------加载当前连接信息---------------------------------------------------
@@ -154,7 +154,7 @@ function loadConns() {
             '<span>' + testData2[i].port2 + '</span>' +
             '</td>' +
             '<td>' +
-            '<button class="manageBtn" style="background-color: #ff6f82" type="button" onclick="drop(this,\'' + testData2[i].id + '\')">踢掉</button>' +
+            '<button class="manageBtn" style="background-color: #d35400" type="button" onclick="drop(this,\'' + testData2[i].id + '\')">踢掉</button>' +
             '</td>' +
             '</tr>';
     }
@@ -242,12 +242,12 @@ function deleteData(btn, sort) {
     if (!flag) {
         $(btn).parent().parent().remove();
         removeArr.push(sort);
-    }
+    }else alert("程序运行中，请先停止！");
 }
 
 /*调用接口删除文件*/
 function drop(btn, id) {
-    var isOk = confirm("确定踢掉这个链接?")
+    var isOk = confirm("确定踢掉这个链接?");
     if (!isOk){
         return
     }
@@ -265,10 +265,10 @@ function drop(btn, id) {
 /*增加数据*/
 function addData() {
     if (flag) {
-        alert("程序运行中，请先停止！")
+        alert("程序运行中，请先停止！");
         return
     }
-    if (!checkInput()) return
+    if (!checkInput()) return;
     var html =
         '<tr>' +
         '<td>' +
@@ -279,27 +279,26 @@ function addData() {
         '</td>' +
         '<td style="text-align: center">' +
         '<input style="width:8em;" id="ip-' + size + '" onblur="updateIp(' + size + ',this)" type="text" />' +
-        ' : ' +
-        '<input id="port2-' + size + '" onblur="updatePort2(' + size + ',this)" style="width: 3.8em" type="number" />' +
+        // ' : ' +
+        // '<input id="port2-' + size + '" onblur="updatePort2(' + size + ',this)" style="width: 3.8em" type="number" />' +
         '</td>' +
         '<td>' +
         '<button class="manageBtn" type="button" onclick="chooseFile(' + size + ')">选择证书</button><' +
         '/td>' +
         '<td>' +
-        '<button class="manageBtn" style="background-color: #c467ff" type="button" onclick="deleteData(this,' + size + ')">删除</button>' +
+        '<button class="manageBtn" style="background-color: #d35400" type="button" onclick="deleteData(this,' + size + ')">删除</button>' +
         '</td>' +
         '</tr>';
     $('#leftTbody').append(html);
     size++;
-    if (!checkInput()) return
+    if (!checkInput()) return;
     var obj = {
         port1:0,
         ip:"",
-        port2: 0,
         tls: false,
         crtPath: "",
         keyPath: ""
-    }
+    };
     testData.push(obj)
 }
 
@@ -364,7 +363,7 @@ function getRunState() {
         }
     })
 }
-getRunState()
+getRunState();
 
 function startRun() {
     if (!flag) {
@@ -381,7 +380,7 @@ function startRun() {
             data: JSON.stringify(testData),
             success: function (res){
                 flag = true;
-                $('#applyBtn').hide()
+                $('#applyBtn').hide();
                 $('#stopBtn').show();
                 alert("...启动成功...")
             },
@@ -399,20 +398,20 @@ function checkInput() {
             alert("请检查第["+(i+1)+"]排的监听端口")
             return false
         }
-        if (t.port2 <= 0){
-            alert("请检查第["+(i+1)+"]排的目的地址端口")
-            return false
-        }
+        // if (t.port2 <= 0){
+        //     alert("请检查第["+(i+1)+"]排的目的地址端口")
+        //     return false
+        // }
 
-        if ( t.ip != 'localhost' && (t.ip == "" || t.ip.split(".").length!=4)){
-            alert("请检查第["+(i+1)+"]排的目的地址ip")
-            return false
-        }
+        // if ( t.ip != 'localhost' && (t.ip == "" || t.ip.split(".").length!=4)){
+        //     alert("请检查第["+(i+1)+"]排的目的地址ip")
+        //     return false
+        // }
 
-        if (t.port1 == t.port2 && (t.ip == 'localhost' || t.ip == '127.0.0.1')) {
-            alert("请检查第["+(i+1)+"]排的数据，不能和本机的监听端口相同")
-            return false
-        }
+        // if (t.port1 == t.port2 && (t.ip == 'localhost' || t.ip == '127.0.0.1')) {
+        //     alert("请检查第["+(i+1)+"]排的数据，不能和本机的监听端口相同")
+        //     return false
+        // }
     }
     return true
 }

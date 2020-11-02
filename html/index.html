@@ -13,11 +13,17 @@
     body {
         margin: 0;
         padding: 0;
-        background-image: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598619415180&di=310297edfdd614e18ba3422d1fd7ecb4&imgtype=0&src=http%3A%2F%2Fb.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2F50da81cb39dbb6fdd30388e10b24ab18962b3798.jpg");
+        /*background-image: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598619415180&di=310297edfdd614e18ba3422d1fd7ecb4&imgtype=0&src=http%3A%2F%2Fb.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2F50da81cb39dbb6fdd30388e10b24ab18962b3798.jpg");*/
+        /*background-color: lightgray;*/
         background-size: 100% 100%;
         background-repeat: no-repeat;
         background-position: center;
         background-attachment: fixed;
+        height: 100%;
+        background-image: linear-gradient(to right, #ecf0f1, #2980b9);
+    }
+    html{
+        height: 100%;
     }
 
     .bg {
@@ -29,19 +35,15 @@
         filter: blur(2px);
     }
 
-    .dataTable {
-        background-color: rgba(255, 255, 255, 0.6);
-    }
+
     .dataTable td ,th {
         padding: 0.5em 0.1em;
-        border: rgba(136, 136, 136, 0.36) 1px solid;
+        /*border: rgba(136, 136, 136, 0.36) 1px solid;*/
         border-left: none;
         border-right: none;
     }
 
-    thead {
-        background: rgba(136, 136, 136, 0.22);
-    }
+
 
     button {
         cursor: pointer;
@@ -63,15 +65,19 @@
         display: flex;
         flex-direction: row-reverse;
         justify-content: space-around;
-        padding: 4.9em 0;
+        /*padding: 4.9em 0;*/
     }
 
     .baseDiv {
-        width: 50%;
-        height: 100%;
+        width: 80%;
+        height: 80%;
         display: flex;
         align-items: center;
         flex-direction: column;
+        /*border-radius: 1em;*/
+        box-shadow: 0px 0px 20px #888888;
+        margin-top: 10%;
+        margin-left: 10%;
     }
 
     .tableDiv {
@@ -83,34 +89,28 @@
     .dataTable {
         text-align: center;
         width: 100%;
-        border: rgba(136, 136, 136, 0.49) 1px solid;
-        border-collapse: collapse;
+        margin-top: 3%;
+        /*border: rgba(136, 136, 136, 0.49) 1px solid;*/
+        /*border-collapse: collapse;*/
     }
 
-    #rightTable thead {
-        background: #FF6F82;
-        color: white;
-    }
-    #leftTable thead {
-        background: cornflowerblue;
-        color: white;
-    }
+
     #leftTable td,#leftTable th {
         padding-right: 0.6em;
     }
 
 
     .leftDiv {
-        height: 100%;
+        background-color: #ecf0f1;
     }
 
     .rightDiv {
-        height: 100%;
+        background-color: #2980b9;
     }
 
     .manageBtn {
         border: 0px;
-        background-color: dodgerblue;
+        background-color: #e67e22;
         color: white;
         border-radius: 0.3em;
         padding: 0.2em 0.8em;
@@ -153,7 +153,7 @@
         z-index: 99;
         color: white;
         font-size: 1.2em;
-        border-bottom: rgba(132, 132, 132, 0.9) 1px solid;
+        /*border-bottom: rgba(132, 132, 132, 0.9) 1px solid;*/
         /*box-shadow: 1px 1px 3px #dddddd;*/
     }
     .sysTitle-bg {
@@ -165,7 +165,7 @@
         z-index: -2;
     }
     .conns {
-        color: #ff7569;
+        color: cornflowerblue;
         width: 50%;
         text-align: center;
     }
@@ -180,7 +180,7 @@
         margin-right: 0.33em;
     }
     .saveBtn {
-        background-color: dodgerblue;
+        background-color: #2ecc71;
         color: white;
         font-size: 0.6em;
         border-radius: 0.22em;
@@ -224,130 +224,275 @@
     }
 
     .alertDiv button {
-        background-color: #3910ff;
         border: 0px;
         border-radius: 0.3em;
         padding: 1.2em 1.2em 1.3em 1.2em;
     }
+    .left-bg{
+        width: 50%;
+        height: 100%;
+        /*background-color: #689CCC;*/
+    }
+    .right-bg{
+        width: 50%;
+        height: 100%;
+        /*background-color: #F2F2EF;*/
+    }
+
+    #rightTable{
+        color: #ecf0f1;
+    }
+    #leftTable{
+        color: #2980b9;
+    }
+
+    .right-title{
+        margin-top: 1em;
+        width: 95%;
+        color: #ecf0f1;
+        font-size: larger;
+        font-weight: bolder;
+        margin-bottom: 3em;
+    }
+    .left-title{
+        color: #2980b9;
+        width: 95%;
+        font-size: larger;
+        font-weight: bolder;
+        margin-top: 1em;
+        margin-bottom: 3em;
+        display: flex;
+        flex-direction: row;
+
+    }
+
+
 </style>
 <body>
 <div class="bg">
     {{/*<img src="/static/img/背景.jpeg" width="100%" height="100%"/>*/}}
 </div>
-<div class="sysTitle">
-    <div class="sysTitle-bg"></div>
-    <div class="conns icon-text">
-        <img class="title-icon" src="/static/img/链接.png" />
-        <div>当前连接</div>
-    </div>
-    <div class="sep-line"></div>
-    <div class="configs">
-        <div class="config-msg icon-text">
-            <img class="title-icon" src="/static/img/配置.png" />
-            <div>配置信息</div>
-        </div>
-        <div class="sysBtns">
-            <div class="saveBtn" onclick="addData()" style="background-color: #3910ff;" id="addBtn">
-                ＋ 增加
-            </div>
-            {{/*<button class="saveBtn" onclick="showUpload()" style="background-color: #9d89ff;" id="uploadBtn">上传证书️</button>*/}}
-            <div class="saveBtn" onclick="startRun()" id="applyBtn">
-                <img class="btn-icon" src="static/img/开始.png"  />
-                启动
-            </div>
-            <div class="saveBtn" onclick="stopRun()" style="background-color: #ff2482;display: none"
-                    id="stopBtn">
-                <img class="btn-icon" src="static/img/停止.png"  />
-                停止
-            </div>
-        </div>
-    </div>
-</div>
-
-
+{{/*<div class="sysTitle">*/}}
+{{/*    <div class="sysTitle-bg"></div>*/}}
+{{/*    <div class="conns icon-text">*/}}
+{{/*        <img class="title-icon" src="/static/img/链接.png" />*/}}
+{{/*        <div>当前连接</div>*/}}
+{{/*    </div>*/}}
+{{/*    <div class="sep-line"></div>*/}}
+{{/*    <div class="configs">*/}}
+{{/*        <div class="config-msg icon-text">*/}}
+{{/*            <img class="title-icon" src="/static/img/配置.png" />*/}}
+{{/*            <div>配置信息</div>*/}}
+{{/*        </div>*/}}
+{{/*        <div class="sysBtns">*/}}
+{{/*            <div class="saveBtn" onclick="addData()" style="background-color: #3910ff;" id="addBtn">*/}}
+{{/*                ＋ 增加*/}}
+{{/*            </div>*/}}
+{{/*            <div class="saveBtn" onclick="startRun()" id="applyBtn">*/}}
+{{/*                <img class="btn-icon" src="static/img/开始.png"  />*/}}
+{{/*                启动*/}}
+{{/*            </div>*/}}
+{{/*            <div class="saveBtn" onclick="stopRun()" style="background-color: #ff2482;display: none"*/}}
+{{/*                    id="stopBtn">*/}}
+{{/*                <img class="btn-icon" src="static/img/停止.png"  />*/}}
+{{/*                停止*/}}
+{{/*            </div>*/}}
+{{/*        </div>*/}}
+{{/*    </div>*/}}
+{{/*</div>*/}}
 
 <div class="container">
-    <div class="baseDiv leftDiv">
-        <div class="tableDiv">
-            <table class="dataTable" id="leftTable">
-                <thead>
-                <th width="10%">加密</th>
-                <th >监听端口</th>
-                <th >目的地址</th>
-                <th >选择证书</th>
-                <th >删除</th>
-                </thead>
-                <tbody id="leftTbody">
+    <div class="left-bg">
+        <div class="baseDiv leftDiv">
+            <div class="left-title">
+                <div style="margin-right: 5em">配置信息</div>
+                <div class="saveBtn" onclick="addData()" style="background-color: #f1c40f;" id="addBtn">
+                    ＋ 增加
+                </div>
+                <div class="saveBtn" onclick="startRun()" id="applyBtn">
+                    <img class="btn-icon" src="static/img/开始.png"  />
+                    启动
+                </div>
+                <div class="saveBtn" onclick="stopRun()" style="background-color: #e74c3c;display: none"
+                     id="stopBtn">
+                    <img class="btn-icon" src="static/img/停止.png"  />
+                    停止
+                </div>
+            </div>
+            <div class="tableDiv">
+                <table class="dataTable" id="leftTable">
+                    <thead>
+                    <th width="10%">加密</th>
+                    <th >监听端口</th>
+                    <th >目的地址</th>
+                    <th >选择证书</th>
+                    <th >删除</th>
+                    </thead>
+                    <tbody id="leftTbody">
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <div class="baseDiv rightDiv">
-        <div class="tableDiv">
-            <table class="dataTable" id="rightTable">
-                <thead>
-                <th >源</th>
-                <th >&nbsp;</th>
-                <th >目的</th>
-                <th >操作</th>
-                </thead>
-                <tbody id="rightTbody">
+    <div class="right-bg">
 
-                </tbody>
-            </table>
+        <div class="baseDiv rightDiv">
+            <div class="right-title">当前连接</div>
+
+            <div class="tableDiv">
+                <table class="dataTable" id="rightTable">
+                    <thead>
+                    <th >源</th>
+                    <th >&nbsp;</th>
+                    <th >目的</th>
+                    <th >操作</th>
+                    </thead>
+                    <tbody id="rightTbody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="topDiv">
+        <div class="alertDiv" id="upload-alert">
+            <form style="width: 80%" enctype="multipart/form-data" id="fileForm">
+                <table style="border-collapse:separate; border-spacing:0px 10px;text-align: center;width: 100%;">
+                    <tr>
+                        <td>
+                            上传证书:
+                        </td>
+                        <td>
+                            <input type="file" id="file1">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            上传密钥:
+                        </td>
+                        <td>
+                            <input type="file" id="file2">
+                        </td>
+                    </tr>
+                </table>
+                <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">
+                    <button class="saveBtn" type="button" style="margin-right: 2em" onclick="uploadFile()">确认</button>
+
+                    <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="alertDiv" id="choose-alert">
+            <form style="width: 60%">
+                <input type="hidden" id="dataSort">
+                <table style="border-collapse:separate; border-spacing:0px 10px;text-align: left;width: 100%"
+                       id="choose-file-table">
+                    <tr>
+                        <td></td>
+                        <td>
+                            文件名
+                        </td>
+                    </tr>
+
+                </table>
+                <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">
+                    <button type="button" class="saveBtn" style="margin-right: 2em" onclick="bindFile()">确认</button>
+                    <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<div class="topDiv">
-    <div class="alertDiv" id="upload-alert">
-        <form style="width: 80%" enctype="multipart/form-data" id="fileForm">
-            <table style="border-collapse:separate; border-spacing:0px 10px;text-align: center;width: 100%;">
-                <tr>
-                    <td>
-                        上传证书:
-                    </td>
-                    <td>
-                        <input type="file" id="file1">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        上传密钥:
-                    </td>
-                    <td>
-                        <input type="file" id="file2">
-                    </td>
-                </tr>
-            </table>
-            <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">
-                <button class="saveBtn" type="button" style="margin-right: 2em" onclick="uploadFile()">确认</button>
 
-                <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>
-            </div>
-        </form>
-    </div>
 
-    <div class="alertDiv" id="choose-alert">
-        <form style="width: 60%">
-            <input type="hidden" id="dataSort">
-            <table style="border-collapse:separate; border-spacing:0px 10px;text-align: left;width: 100%"
-                   id="choose-file-table">
-                <tr>
-                    <td></td>
-                    <td>
-                        文件名
-                    </td>
-                </tr>
+{{/*<div class="container">*/}}
+{{/*    <div class="baseDiv leftDiv">*/}}
+{{/*        <div class="tableDiv">*/}}
+{{/*            <table class="dataTable" id="leftTable">*/}}
+{{/*                <thead>*/}}
+{{/*                <th width="10%">加密</th>*/}}
+{{/*                <th >监听端口</th>*/}}
+{{/*                <th >目的地址</th>*/}}
+{{/*                <th >选择证书</th>*/}}
+{{/*                <th >删除</th>*/}}
+{{/*                </thead>*/}}
+{{/*                <tbody id="leftTbody">*/}}
 
-            </table>
-            <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">
-                <button type="button" class="saveBtn" style="margin-right: 2em" onclick="bindFile()">确认</button>
-                <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>
-            </div>
-        </form>
-    </div>
-</div>
+{{/*                </tbody>*/}}
+{{/*            </table>*/}}
+{{/*        </div>*/}}
+{{/*    </div>*/}}
+{{/*    <div class="baseDiv rightDiv">*/}}
+
+{{/*        <div class="tableDiv">*/}}
+{{/*            <table class="dataTable" id="rightTable">*/}}
+{{/*                <thead>*/}}
+{{/*                <th >源</th>*/}}
+{{/*                <th >&nbsp;</th>*/}}
+{{/*                <th >目的</th>*/}}
+{{/*                <th >操作</th>*/}}
+{{/*                </thead>*/}}
+{{/*                <tbody id="rightTbody">*/}}
+
+{{/*                </tbody>*/}}
+{{/*            </table>*/}}
+{{/*        </div>*/}}
+{{/*    </div>*/}}
+
+{{/*    <div class="topDiv">*/}}
+{{/*        <div class="alertDiv" id="upload-alert">*/}}
+{{/*            <form style="width: 80%" enctype="multipart/form-data" id="fileForm">*/}}
+{{/*                <table style="border-collapse:separate; border-spacing:0px 10px;text-align: center;width: 100%;">*/}}
+{{/*                    <tr>*/}}
+{{/*                        <td>*/}}
+{{/*                            上传证书:*/}}
+{{/*                        </td>*/}}
+{{/*                        <td>*/}}
+{{/*                            <input type="file" id="file1">*/}}
+{{/*                        </td>*/}}
+{{/*                    </tr>*/}}
+{{/*                    <tr>*/}}
+{{/*                        <td>*/}}
+{{/*                            上传密钥:*/}}
+{{/*                        </td>*/}}
+{{/*                        <td>*/}}
+{{/*                            <input type="file" id="file2">*/}}
+{{/*                        </td>*/}}
+{{/*                    </tr>*/}}
+{{/*                </table>*/}}
+{{/*                <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">*/}}
+{{/*                    <button class="saveBtn" type="button" style="margin-right: 2em" onclick="uploadFile()">确认</button>*/}}
+
+{{/*                    <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>*/}}
+{{/*                </div>*/}}
+{{/*            </form>*/}}
+{{/*        </div>*/}}
+
+{{/*        <div class="alertDiv" id="choose-alert">*/}}
+{{/*            <form style="width: 60%">*/}}
+{{/*                <input type="hidden" id="dataSort">*/}}
+{{/*                <table style="border-collapse:separate; border-spacing:0px 10px;text-align: left;width: 100%"*/}}
+{{/*                       id="choose-file-table">*/}}
+{{/*                    <tr>*/}}
+{{/*                        <td></td>*/}}
+{{/*                        <td>*/}}
+{{/*                            文件名*/}}
+{{/*                        </td>*/}}
+{{/*                    </tr>*/}}
+
+{{/*                </table>*/}}
+{{/*                <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">*/}}
+{{/*                    <button type="button" class="saveBtn" style="margin-right: 2em" onclick="bindFile()">确认</button>*/}}
+{{/*                    <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>*/}}
+{{/*                </div>*/}}
+{{/*            </form>*/}}
+{{/*        </div>*/}}
+{{/*    </div>*/}}
+{{/*</div>*/}}
+
 </body>
 <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="/static/js/index.js"></script>
