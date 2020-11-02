@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"strconv"
+	"strings"
 	"sync"
 )
 
@@ -94,11 +95,6 @@ func handle(sourceConn net.Conn, destination string) {
 	defer Lock.Unlock()
 	Lock.Lock()
 
-	//destination_ip_port := strings.Split(destination, ":")
-	//destination_ip := destination_ip_port[0]
-	//destination_port, _ := strconv.Atoi(destination_ip_port[1])
-
-	//destConn := toDestination(sourceConn, destination)
 	tcpAddr_dest, err := net.ResolveTCPAddr("tcp4", destination)
 	destConn, err := net.DialTCP("tcp", nil, tcpAddr_dest)
 	if err != nil {
@@ -127,7 +123,7 @@ func handle(sourceConn net.Conn, destination string) {
 
 func checkError(err error) bool {
 	if err != nil {
-		logrus.Error("checkError Fatal error: %s", err)
+		//logrus.Error("checkError Fatal error: %v", err)
 		return false
 	}
 	return true
@@ -137,9 +133,26 @@ func checkError(err error) bool {
 * bindPort  监听端口，也是源端口
 * proxyPort 需要转发的目的端口
 */
+var curDestIndex = 0;
+var destCount = 0;
 func getBindPortAndProxypassPort(p *ProxyConf) (bindPort int, destination string, isTls bool, tlsConf *TlsConf) {
 	bindPort, _ = strconv.Atoi(p.Source)
-	destination = p.Destination
+	destinations := p.Destinations
+	destCount = len(destinations)
+	if curDestIndex >= destCount {
+		curDestIndex = 0
+	}
+	if strings.Contains(destinations,","){
+		destSlice := strings.Split(destinations,",")
+		for i,_ := range destSlice {
+			d := destSlice[i]
+			if PortIsOpen(d,10) {
+				i += 1;
+				destination = d
+				break
+			}
+		}
+	}
 	isTls = p.Tls
 	tlsConf = p.TlsCf
 	return

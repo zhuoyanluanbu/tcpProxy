@@ -64,7 +64,7 @@ func ApiStart(complete func(string)) {
 		for _,po := range pcvs {
 			pc := &proxy.ProxyConf{
 				Source: fmt.Sprintf("%v",po.Port1),
-				Destination: fmt.Sprintf("%v:%v",po.Ip,po.Port2),
+				Destinations: fmt.Sprintf("%v:%v",po.Ip,po.Port2),
 				Tls: po.Tls,
 			}
 			if po.Tls {

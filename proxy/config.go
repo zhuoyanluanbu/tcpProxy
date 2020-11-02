@@ -9,21 +9,21 @@ import (
 )
 
 type ProxyConf struct {
-	Source      string  `json:"source"`
-	Destination string  `json:"destination"`
-	Tls         bool    `json:"tls"`
-	TlsCf       *TlsConf `json:"tlsCf"`
+	Source       string   `json:"source"`
+	Destinations string `json:"destinations"` //逗号隔开
+	Tls          bool     `json:"tls"`
+	TlsCf        *TlsConf `json:"tlsCf"`
 }
 type TlsConf struct {
 	CrtPath string `json:"crtPath"`
-	KeyPath string	`json:"keyPath"`
+	KeyPath string `json:"keyPath"`
 }
 
 var configFilePath = "./config.json"
-var ProxyConfig = make([]*ProxyConf,0)
+var ProxyConfig = make([]*ProxyConf, 0)
 
-func ClearProxyConfig()  {
-	ProxyConfig = make([]*ProxyConf,0)
+func ClearProxyConfig() {
+	ProxyConfig = make([]*ProxyConf, 0)
 }
 
 func SaveToConfig() {
@@ -33,9 +33,9 @@ func SaveToConfig() {
 		logrus.Error(err.Error())
 	}
 
-	b,_ := json.Marshal(&ProxyConfig)
+	b, _ := json.Marshal(&ProxyConfig)
 	_, err = f.Write([]byte(""))
-	time.Sleep(1000*time.Millisecond)
+	time.Sleep(1000 * time.Millisecond)
 	_, err = f.Write(b)
 	if err != nil {
 		logrus.Error(err.Error())
@@ -52,5 +52,5 @@ func LoadFromConfig() {
 	if err != nil {
 		logrus.Error(err)
 	}
-	json.Unmarshal(b,&ProxyConfig)
+	json.Unmarshal(b, &ProxyConfig)
 }

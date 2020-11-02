@@ -1,1 +1,1 @@
-[{"source":"63790","destination":"127.0.0.1:6379","tls":false,"tlsCf":null},{"source":"18833","destination":"127.0.0.1:1883","tls":false,"tlsCf":null},{"source":"33060","destination":"127.0.0.1:3306","tls":false,"tlsCf":null},{"source":"1300","destination":"127.0.0.1:3000","tls":true,"tlsCf":{"crtPath":"./certs/server.pem","keyPath":"./certs/server.key"}}]
+[]

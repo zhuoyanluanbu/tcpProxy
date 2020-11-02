@@ -11,7 +11,7 @@ func TestSaveToConfig(t *testing.T) {
 		ProxyConfig,
 		&ProxyConf{
 			Source:      "127.0.0.1:2020",
-			Destination: "127.0.0.1:2200",
+			Destinations: "127.0.0.1:2200",
 			Tls:         false,
 		},)
 	SaveToConfig()
