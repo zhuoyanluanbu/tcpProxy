@@ -33,7 +33,7 @@ function loadConfigs() {
                     '<input onblur="updatePort1(' + i + ',this)" id="port1-' + i + '" style="width: 3.8em;text-align: center" type="number" value="' + td.port1 + '">' +
                 '</td>' +
                 '<td style="text-align: center;">' +
-                    '<input style="width: 8em" id="ip-' + i + '" onblur="updateIp(' + i + ',this)" type="text" value="' + td.ip + '"/>' +
+                    '<input style="width: 12.6em" id="ip-' + i + '" onblur="updateIp(' + i + ',this)" type="text" value="' + td.ip + '"/>' +
                     // ' : ' +
                     // '<input id="port2-' + i + '" onblur="updatePort2(' + i + ',this)" style="width: 3.8em" type="number" value="' + td.port2 + '"/>' +
                 '</td>' +
@@ -379,10 +379,15 @@ function startRun() {
             type: 'post',
             data: JSON.stringify(testData),
             success: function (res){
-                flag = true;
-                $('#applyBtn').hide();
-                $('#stopBtn').show();
-                alert("...启动成功...")
+                if (res == 'ok'){
+                    flag = true;
+                    $('#applyBtn').hide();
+                    $('#stopBtn').show();
+                    alert("...启动成功...")
+                }else {
+                    alert(res);
+                }
+
             },
             error: function (err) {
                 alert(JSON.stringify(err))
@@ -398,6 +403,7 @@ function checkInput() {
             alert("请检查第["+(i+1)+"]排的监听端口")
             return false
         }
+        t.ip = t.ip.replace(/，/g,',').replace(/;/g,',').replace(/；/g,',')
         // if (t.port2 <= 0){
         //     alert("请检查第["+(i+1)+"]排的目的地址端口")
         //     return false
@@ -439,6 +445,7 @@ function updateCheck(sort, text) {
 
 function updatePort1(sort, text) {
     for (var t in testData){
+        testData[t].port1 = testData[t].port1.replace(/，/g,',');
         if ($(text).val() == testData[t].port1) {
             alert("监听端口重复")
             $(text).val('')

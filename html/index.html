@@ -22,7 +22,8 @@
         height: 100%;
         background-image: linear-gradient(to right, #ecf0f1, #2980b9);
     }
-    html{
+
+    html {
         height: 100%;
     }
 
@@ -30,19 +31,19 @@
         z-index: -99;
         position: absolute;
     }
-    .bg img{
+
+    .bg img {
         opacity: 0.8;
         filter: blur(2px);
     }
 
 
-    .dataTable td ,th {
+    .dataTable td, th {
         padding: 0.5em 0.1em;
         /*border: rgba(136, 136, 136, 0.36) 1px solid;*/
         border-left: none;
         border-right: none;
     }
-
 
 
     button {
@@ -69,7 +70,7 @@
     }
 
     .baseDiv {
-        width: 80%;
+        width: 90%;
         height: 80%;
         display: flex;
         align-items: center;
@@ -77,7 +78,7 @@
         /*border-radius: 1em;*/
         box-shadow: 0px 0px 20px #888888;
         margin-top: 10%;
-        margin-left: 10%;
+        margin-left: 5%;
     }
 
     .tableDiv {
@@ -95,7 +96,7 @@
     }
 
 
-    #leftTable td,#leftTable th {
+    #leftTable td, #leftTable th {
         padding-right: 0.6em;
     }
 
@@ -156,6 +157,7 @@
         /*border-bottom: rgba(132, 132, 132, 0.9) 1px solid;*/
         /*box-shadow: 1px 1px 3px #dddddd;*/
     }
+
     .sysTitle-bg {
         width: 100%;
         height: 100%;
@@ -164,21 +166,25 @@
         /*filter: blur(15px);*/
         z-index: -2;
     }
+
     .conns {
         color: cornflowerblue;
         width: 50%;
         text-align: center;
     }
+
     .icon-text {
         display: flex;
         justify-content: center;
         align-items: center;
     }
+
     .title-icon {
         width: 1.2em;
         height: 1.2em;
         margin-right: 0.33em;
     }
+
     .saveBtn {
         background-color: #2ecc71;
         color: white;
@@ -206,6 +212,7 @@
         background: rgba(136, 136, 136, 0.14);
         /*width: 1px;*/
     }
+
     .configs {
         width: 50%;
         text-align: center;
@@ -228,25 +235,28 @@
         border-radius: 0.3em;
         padding: 1.2em 1.2em 1.3em 1.2em;
     }
-    .left-bg{
+
+    .left-bg {
         width: 50%;
         height: 100%;
         /*background-color: #689CCC;*/
     }
-    .right-bg{
+
+    .right-bg {
         width: 50%;
         height: 100%;
         /*background-color: #F2F2EF;*/
     }
 
-    #rightTable{
+    #rightTable {
         color: #ecf0f1;
     }
-    #leftTable{
+
+    #leftTable {
         color: #2980b9;
     }
 
-    .right-title{
+    .right-title {
         margin-top: 1em;
         width: 95%;
         color: #ecf0f1;
@@ -254,7 +264,8 @@
         font-weight: bolder;
         margin-bottom: 3em;
     }
-    .left-title{
+
+    .left-title {
         color: #2980b9;
         width: 95%;
         font-size: larger;
@@ -310,12 +321,12 @@
                     ＋ 增加
                 </div>
                 <div class="saveBtn" onclick="startRun()" id="applyBtn">
-                    <img class="btn-icon" src="static/img/开始.png"  />
+                    <img class="btn-icon" src="static/img/开始.png"/>
                     启动
                 </div>
                 <div class="saveBtn" onclick="stopRun()" style="background-color: #e74c3c;display: none"
                      id="stopBtn">
-                    <img class="btn-icon" src="static/img/停止.png"  />
+                    <img class="btn-icon" src="static/img/停止.png"/>
                     停止
                 </div>
             </div>
@@ -323,10 +334,10 @@
                 <table class="dataTable" id="leftTable">
                     <thead>
                     <th width="10%">加密</th>
-                    <th >监听端口</th>
-                    <th >目的地址</th>
-                    <th >选择证书</th>
-                    <th >删除</th>
+                    <th>监听端口</th>
+                    <th>目的地址</th>
+                    <th>选择证书</th>
+                    <th>删除</th>
                     </thead>
                     <tbody id="leftTbody">
 
@@ -335,18 +346,18 @@
             </div>
         </div>
     </div>
-    <div class="right-bg">
 
+    <div class="right-bg">
         <div class="baseDiv rightDiv">
             <div class="right-title">当前连接</div>
 
             <div class="tableDiv">
                 <table class="dataTable" id="rightTable">
                     <thead>
-                    <th >源</th>
-                    <th >&nbsp;</th>
-                    <th >目的</th>
-                    <th >操作</th>
+                    <th>源</th>
+                    <th>&nbsp;</th>
+                    <th>目的</th>
+                    <th>操作</th>
                     </thead>
                     <tbody id="rightTbody">
 
@@ -380,7 +391,8 @@
                 <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">
                     <button class="saveBtn" type="button" style="margin-right: 2em" onclick="uploadFile()">确认</button>
 
-                    <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>
+                    <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回
+                    </button>
                 </div>
             </form>
         </div>
@@ -400,7 +412,8 @@
                 </table>
                 <div style="display: flex;justify-content: center;width: 100%;margin-top: 3em">
                     <button type="button" class="saveBtn" style="margin-right: 2em" onclick="bindFile()">确认</button>
-                    <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回</button>
+                    <button type="button" class="saveBtn" style="background-color: gray" onclick="hideAlert()">返回
+                    </button>
                 </div>
             </form>
         </div>

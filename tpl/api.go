@@ -91,7 +91,19 @@ func ApiStart(complete func(string)) {
 			proxy.SaveToConfig()
 			proxy.Start()
 		}
-		writer.Write([]byte("ok"))
+		buff := ""
+		for _,p := range proxy.ProxyConfig {
+			if proxy.PortIsOpen(fmt.Sprintf("0.0.0.0:%v",p.Source),3) {
+				buff += fmt.Sprintf("端口[%v]被占用",p.Source)
+			}
+		}
+		if buff == "" {
+			writer.Write([]byte("ok"))
+		}else {
+			proxy.Stop()
+			writer.Write([]byte(buff))
+		}
+
 	})
 
 	http.HandleFunc("/shutdown",func(writer http.ResponseWriter, request *http.Request) {

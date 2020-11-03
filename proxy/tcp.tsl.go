@@ -51,7 +51,11 @@ func Stop() {
 }
 
 func bindProxy(p *ProxyConf) {
-	bindPort, destination, isTls, tlsConf := getBindPortAndProxypassPort(p)
+	bindPort, isTls, tlsConf := getBindPortAndProxypassPort(p)
+	if (PortIsOpen(fmt.Sprintf("0.0.0.0:%v",bindPort),3)){
+		logrus.Errorf("端口[%v]已经被占用",bindPort)
+		return
+	}
 	var listener net.Listener
 	var err error
 	if !isTls {
@@ -83,7 +87,7 @@ func bindProxy(p *ProxyConf) {
 		if er != nil {
 			break
 		}
-		go handle(conn, destination)
+		go handle(conn, p)
 	}
 }
 
@@ -91,10 +95,10 @@ func bindProxy(p *ProxyConf) {
 * 处理转发
 * proxyPort 需要转发的目的端口
 */
-func handle(sourceConn net.Conn, destination string) {
+func handle(sourceConn net.Conn, p *ProxyConf) {
 	defer Lock.Unlock()
 	Lock.Lock()
-
+	destination := getDestination(p)
 	tcpAddr_dest, err := net.ResolveTCPAddr("tcp4", destination)
 	destConn, err := net.DialTCP("tcp", nil, tcpAddr_dest)
 	if err != nil {
@@ -133,12 +137,18 @@ func checkError(err error) bool {
 * bindPort  监听端口，也是源端口
 * proxyPort 需要转发的目的端口
 */
+
+func getBindPortAndProxypassPort(p *ProxyConf) (bindPort int, isTls bool, tlsConf *TlsConf) {
+	bindPort, _ = strconv.Atoi(p.Source)
+	isTls = p.Tls
+	tlsConf = p.TlsCf
+	return
+}
+
 var curDestIndex = 0;
 var destCount = 0;
-func getBindPortAndProxypassPort(p *ProxyConf) (bindPort int, destination string, isTls bool, tlsConf *TlsConf) {
-	bindPort, _ = strconv.Atoi(p.Source)
+func getDestination(p *ProxyConf) (destination string) {
 	destinations := p.Destinations
-	destCount = len(destinations)
 	if curDestIndex >= destCount {
 		curDestIndex = 0
 	}
@@ -153,8 +163,6 @@ func getBindPortAndProxypassPort(p *ProxyConf) (bindPort int, destination string
 			}
 		}
 	}
-	isTls = p.Tls
-	tlsConf = p.TlsCf
 	return
 }
 
