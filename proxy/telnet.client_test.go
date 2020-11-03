@@ -18,7 +18,7 @@ func TestPortIsOpen(t *testing.T) {
 		{
 			name:"TestPortIsOpen",
 			args: args{
-				ip:      "192.168.0.13:1883",
+				ip:      "0.0.0.0:1081",
 				timeout: 10,
 			},
 			want: true,

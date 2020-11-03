@@ -162,6 +162,8 @@ func getDestination(p *ProxyConf) (destination string) {
 				break
 			}
 		}
+	}else {
+		destination = p.Destinations
 	}
 	return
 }

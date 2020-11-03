@@ -30,10 +30,10 @@ function loadConfigs() {
                 '<td>' +
                     '<input onblur="updateCheck(' + i + ',this)" type="checkbox" class="encode-checkbox"'+ checked +'></td>' +
                 '<td>' +
-                    '<input onchange="updatePort1(' + i + ',this)" id="port1-' + i + '" style="width: 3.8em;text-align: center" type="number" value="' + td.port1 + '">' +
+                    '<input class="input-port" onchange="updatePort1(' + i + ',this)" id="port1-' + i + '" style="width: 3.8em;text-align: center" type="number" value="' + td.port1 + '">' +
                 '</td>' +
                 '<td style="text-align: center;">' +
-                    '<input style="width: 12.6em" id="ip-' + i + '" onblur="updateIp(' + i + ',this)" type="text" value="' + td.ip + '"/>' +
+                    '<input style="width: 12.6em" class="input-ip" id="ip-' + i + '" onblur="updateIp(' + i + ',this)" type="text" value="' + td.ip + '"/>' +
                     // ' : ' +
                     // '<input id="port2-' + i + '" onblur="updatePort2(' + i + ',this)" style="width: 3.8em" type="number" value="' + td.port2 + '"/>' +
                 '</td>' +
@@ -111,7 +111,6 @@ function loadConfigsFromApi() {
                 var destination = data.destinations;
                 var port1 = source.split(":")[0];
                 var ip = destination;
-                // var port2 = destination.split(":")[1]
                 var tls = data.tls;
                 var crtPath = '';
                 var keyPath = '';
@@ -275,10 +274,10 @@ function addData() {
         '<input type="checkbox" class="encode-checkbox">' +
         '</td>' +
         '<td>' +
-        '<input onchange="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 3.8em;text-align:center" type="number" />' +
+        '<input class="input-port" onchange="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 3.8em;text-align:center" type="number" />' +
         '</td>' +
         '<td style="text-align: center">' +
-        '<input style="width:8em;" id="ip-' + size + '" onblur="updateIp(' + size + ',this)" type="text" />' +
+        '<input style="width:8em;" id="ip-' + size + '" onblur="updateIp(' + size + ',this)" type="text" class="input-ip" />' +
         // ' : ' +
         // '<input id="port2-' + size + '" onblur="updatePort2(' + size + ',this)" style="width: 3.8em" type="number" />' +
         '</td>' +
@@ -351,12 +350,20 @@ function getRunState() {
         success: function (res){
             if (res == 'true') {
                 flag = true
-                $('#applyBtn').hide()
+                $('#applyBtn').hide();
                 $('#stopBtn').show();
+
+                $('.input-port').attr('readOnly','readOnly');
+                $(".input-ip").attr('readOnly','readOnly');
+                $(".encode-checkbox").attr('disabled','disabled');
             }else {
                 flag = false;
                 $('#applyBtn').show();
                 $('#stopBtn').hide();
+
+                $('.input-port').removeAttr('readOnly');
+                $(".input-ip").removeAttr('readOnly');
+                $(".encode-checkbox").removeAttr('disabled');
             }
         },
         error: function (res) {
@@ -373,7 +380,7 @@ function startRun() {
             }
         }
         if (!checkInput()) return
-        console.log(testData);
+        console.log(JSON.stringify(testData));
         $.ajax({
             url: '/startup',
             type: 'post',
@@ -383,7 +390,11 @@ function startRun() {
                     flag = true;
                     $('#applyBtn').hide();
                     $('#stopBtn').show();
-                    alert("...启动成功...")
+                    alert("...启动成功...");
+                    //启动之后禁用
+                    $('.input-port').attr('readOnly','readOnly');
+                    $(".input-ip").attr('readOnly','readOnly');
+                    $(".encode-checkbox").attr('disabled','disabled');
                 }else {
                     alert(res);
                 }
@@ -398,7 +409,7 @@ function startRun() {
 
 function checkInput() {
     for (var i=0;i<testData.length;i++){
-        var t = testData[i]
+        var t = testData[i];
         if (t.port1 <= 0){
             alert("请检查第["+(i+1)+"]排的监听端口")
             return false
@@ -430,6 +441,10 @@ function stopRun() {
                 flag = false;
                 $('#applyBtn').show();
                 $('#stopBtn').hide();
+                //停止之后启用input
+                $('.input-port').removeAttr('readOnly');
+                $(".input-ip").removeAttr('readOnly');
+                $(".encode-checkbox").removeAttr('disabled');
             },
             error: function (res) {
             }
@@ -445,13 +460,14 @@ function updateCheck(sort, text) {
 
 function updatePort1(sort, text) {
     for (var t in testData){
-        testData[t].port1 = testData[t].port1.replace(/，/g,',');
+        // testData[t].port1 = testData[t].port1.replace(/，/g,',');
         if ($(text).val() == testData[t].port1) {
             alert("监听端口重复")
-            $(text).val('')
+            $(text).val('');
             return
         }
     }
+
     if (!flag) {
         testData[sort].port1 = $(text).val();
     }
@@ -478,7 +494,10 @@ function chooseFile(sort) {
         $('#upload-alert').css('display', 'none');
 
         $('#dataSort').val(sort);
-    } else return;
+    } else {
+        alert("程序运行中，请先停止！");
+        return;
+    }
 }
 
 /*绑定文件*/

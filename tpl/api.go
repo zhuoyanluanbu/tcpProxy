@@ -87,17 +87,18 @@ func ApiStart(complete func(string)) {
 			}
 			proxy.ProxyConfig = append(proxy.ProxyConfig, pc)
 		}
+		buff := ""
 		if !proxy.IsStart {
 			proxy.SaveToConfig()
-			proxy.Start()
-		}
-		buff := ""
-		for _,p := range proxy.ProxyConfig {
-			if proxy.PortIsOpen(fmt.Sprintf("0.0.0.0:%v",p.Source),3) {
-				buff += fmt.Sprintf("端口[%v]被占用",p.Source)
+			for _,p := range proxy.ProxyConfig {
+				if proxy.PortIsOpen(fmt.Sprintf("0.0.0.0:%v",p.Source),3) {
+					buff += fmt.Sprintf("端口[%v]被占用",p.Source)
+				}
 			}
 		}
+
 		if buff == "" {
+			proxy.Start()
 			writer.Write([]byte("ok"))
 		}else {
 			proxy.Stop()
