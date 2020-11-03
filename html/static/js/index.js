@@ -30,7 +30,7 @@ function loadConfigs() {
                 '<td>' +
                     '<input onblur="updateCheck(' + i + ',this)" type="checkbox" class="encode-checkbox"'+ checked +'></td>' +
                 '<td>' +
-                    '<input onblur="updatePort1(' + i + ',this)" id="port1-' + i + '" style="width: 3.8em;text-align: center" type="number" value="' + td.port1 + '">' +
+                    '<input onchange="updatePort1(' + i + ',this)" id="port1-' + i + '" style="width: 3.8em;text-align: center" type="number" value="' + td.port1 + '">' +
                 '</td>' +
                 '<td style="text-align: center;">' +
                     '<input style="width: 12.6em" id="ip-' + i + '" onblur="updateIp(' + i + ',this)" type="text" value="' + td.ip + '"/>' +
@@ -275,7 +275,7 @@ function addData() {
         '<input type="checkbox" class="encode-checkbox">' +
         '</td>' +
         '<td>' +
-        '<input onblur="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 3.8em;text-align:center" type="number" />' +
+        '<input onchange="updatePort1(' + size + ',this)" id="port1-' + size + '" style="width: 3.8em;text-align:center" type="number" />' +
         '</td>' +
         '<td style="text-align: center">' +
         '<input style="width:8em;" id="ip-' + size + '" onblur="updateIp(' + size + ',this)" type="text" />' +
