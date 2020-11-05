@@ -18,8 +18,8 @@ type Addr struct {
 }
 
 type Bridge struct {
-	Source             net.Conn       `json:"sourceConn"`
-	Destination        net.Conn       `json:"destinationConn"`
+	Source      net.Conn `json:"sourceConn"`
+	Destination net.Conn `json:"destinationConn"`
 }
 
 var listeners = make([]net.Listener, 0)
@@ -52,8 +52,8 @@ func Stop() {
 
 func bindProxy(p *ProxyConf) {
 	bindPort, isTls, tlsConf := getBindPortAndProxypassPort(p)
-	if (PortIsOpen(fmt.Sprintf("0.0.0.0:%v",bindPort),3)){
-		logrus.Errorf("端口[%v]已经被占用",bindPort)
+	if (PortIsOpen(fmt.Sprintf("0.0.0.0:%v", bindPort), 3)) {
+		logrus.Errorf("端口[%v]已经被占用", bindPort)
 		return
 	}
 	var listener net.Listener
@@ -107,7 +107,7 @@ func handle(sourceConn net.Conn, p *ProxyConf) {
 	}
 
 	bridge := &Bridge{
-		Source: sourceConn,
+		Source:      sourceConn,
 		Destination: destConn,
 	}
 	ConnMap[sourceConn] = bridge
@@ -119,7 +119,7 @@ func handle(sourceConn net.Conn, p *ProxyConf) {
 	}()
 
 	go func() {
-		defer ReleaseConn(sourceConn,destConn)
+		defer ReleaseConn(sourceConn, destConn)
 		buf := make([]byte, 8)
 		io.CopyBuffer(destConn, sourceConn, buf)
 	}()
@@ -146,23 +146,24 @@ func getBindPortAndProxypassPort(p *ProxyConf) (bindPort int, isTls bool, tlsCon
 }
 
 var curDestIndex = 0;
+
 var destCount = 0;
+
 func getDestination(p *ProxyConf) (destination string) {
 	destinations := p.Destinations
 	if curDestIndex >= destCount {
 		curDestIndex = 0
 	}
-	if strings.Contains(destinations,","){
-		destSlice := strings.Split(destinations,",")
-		for i,_ := range destSlice {
-			d := destSlice[i]
-			if PortIsOpen(d,10) {
-				i += 1;
-				destination = d
-				break
-			}
+	if strings.Contains(destinations, ",") {
+		destSlice := strings.Split(destinations, ",")
+		destCount = len(destSlice)
+		d := destSlice[curDestIndex]
+		if PortIsOpen(d, 10) {
+			curDestIndex ++
+			destination = d
 		}
-	}else {
+
+	} else {
 		destination = p.Destinations
 	}
 	return

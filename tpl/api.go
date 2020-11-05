@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 	"tcpProxy/proxy"
 	"time"
@@ -134,6 +135,9 @@ func ApiStart(complete func(string)) {
 			}
 			connDisplays = append(connDisplays, cd)
 		}
+		sort.Slice(connDisplays, func(i, j int) bool {
+			return connDisplays[i].ID < connDisplays[j].ID
+		})
 		jsonB, _ := json.Marshal(connDisplays)
 		writer.Write(jsonB)
 	})
