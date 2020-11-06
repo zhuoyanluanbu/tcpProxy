@@ -30,7 +30,7 @@ type ProxyConfigVo struct {
 }
 
 var httpServer = http.Server{
-	Addr: "127.0.0.1:18081",
+	Addr: "0.0.0.0:18081",
 }
 
 func TplStart() {
