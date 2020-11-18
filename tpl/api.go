@@ -30,7 +30,7 @@ type ProxyConfigVo struct {
 }
 
 var httpServer = http.Server{
-	Addr: "0.0.0.0:18081",
+	Addr: ":18081",
 }
 
 func TplStart() {
@@ -196,6 +196,7 @@ func ApiStart(complete func(string)) {
 		complete(fmt.Sprintf("http://%v/index",httpServer.Addr))
 	}()
 
+	fmt.Printf("http 监听 %v",httpServer.Addr)
 	httpServer.ListenAndServe()
 
 }

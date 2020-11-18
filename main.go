@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os/exec"
 	"tcpProxy/proxy"
 	"tcpProxy/tool"
@@ -9,7 +10,9 @@ import (
 
 func main() {
 	tool.InitYmlConfig()
+	fmt.Println("init yml ...")
 	proxy.LoadFromConfig()
+	fmt.Println("init config.json ...")
 	tpl.ApiStart(openBrowser)
 }
 
