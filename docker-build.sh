@@ -1,5 +1,5 @@
 #!/bin/bash
 
-docker build -t hyc/tcpproxy:latest .
+docker build -t cetciot/mqtt-broker-proxy:latest .
 mkdir ./bin
-docker save -o ./bin/tcpproxy.tar hyc/tcpproxy:latest
+docker save -o ./bin/tcpproxy.tar cetciot/mqtt-broker-proxy:latest

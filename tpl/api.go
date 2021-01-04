@@ -192,8 +192,9 @@ func ApiStart(complete func(string)) {
 	TplStart()
 
 	go func() {
-		time.Sleep(time.Second*1)
-		complete(fmt.Sprintf("http://%v/index",httpServer.Addr))
+		time.Sleep(time.Second*2)
+		url := fmt.Sprintf("http://127.0.0.1%v/index",httpServer.Addr)
+		complete(url)
 	}()
 
 	fmt.Printf("http 监听 %v",httpServer.Addr)
@@ -209,3 +210,5 @@ func getFileNames(path string) []string {
 	}
 	return names
 }
+
+

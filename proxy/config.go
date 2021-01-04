@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -53,4 +54,18 @@ func LoadFromConfig() {
 		logrus.Error(err)
 	}
 	json.Unmarshal(b, &ProxyConfig)
+
+	src_port := os.Getenv("SRC_PORT")
+	dst_addr := os.Getenv("DST_ADDR")
+	if src_port != "" && IsNum(src_port) && dst_addr != "" && len(ProxyConfig) == 0{
+		pcg_default := &ProxyConf{Source:src_port,Destinations:dst_addr,Tls:false,TlsCf:nil}
+		ProxyConfig = append(ProxyConfig,pcg_default)
+		SaveToConfig()
+	}
+}
+
+
+func IsNum(s string) bool {
+	_, err := strconv.ParseInt(s,10, 64)
+	return err == nil
 }
