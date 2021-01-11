@@ -3,12 +3,12 @@ version: '3'
 services:
   mqtml:
     image: cetciot/mqtt-broker-proxy
-    container_name: mqtml
+    container_name: mqtt-proxy
     network_mode: host
     restart: always
     ports:
-      - "5155:5155"
+      - "18081:18081"
     environment:
       LOG_LEVEL: "debug"
       SRC_PORT: "1883"
-      DST_ADDR: "192.168.0.110:1883,192.168.0.13:1883"
+      DST_ADDR: "192.168.0.95:1883"

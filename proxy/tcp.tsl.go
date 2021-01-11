@@ -24,7 +24,7 @@ type Bridge struct {
 
 var listeners = make([]net.Listener, 0)
 var ConnMap = make(map[net.Conn]*Bridge)
-var Lock = &sync.Mutex{}
+var Lock = &sync.RWMutex{}
 
 var IsStart = false
 
@@ -96,8 +96,6 @@ func bindProxy(p *ProxyConf) {
 * proxyPort 需要转发的目的端口
 */
 func handle(sourceConn net.Conn, p *ProxyConf) {
-	defer Lock.Unlock()
-	Lock.Lock()
 	destination := getDestination(p)
 	tcpAddr_dest, err := net.ResolveTCPAddr("tcp4", destination)
 	destConn, err := net.DialTCP("tcp", nil, tcpAddr_dest)
@@ -110,7 +108,9 @@ func handle(sourceConn net.Conn, p *ProxyConf) {
 		Source:      sourceConn,
 		Destination: destConn,
 	}
+	Lock.RLock()
 	ConnMap[sourceConn] = bridge
+	Lock.RUnlock()
 
 	go func() {
 		defer ReleaseConn(sourceConn, destConn)
@@ -170,12 +170,15 @@ func getDestination(p *ProxyConf) (destination string) {
 }
 
 func ReleaseConn(sourceConn, destConn net.Conn) {
-	defer Lock.Unlock()
-	Lock.Lock()
-	if ConnMap[sourceConn] != nil {
+	Lock.RLock()
+	br := ConnMap[sourceConn]
+	Lock.RUnlock()
+	if br != nil {
 		sourceConn.Close()
 		destConn.Close()
+		Lock.Lock()
 		delete(ConnMap, sourceConn)
+		Lock.Unlock()
 		logrus.Infof("release connect => %v", sourceConn.RemoteAddr().String())
 	}
 }
