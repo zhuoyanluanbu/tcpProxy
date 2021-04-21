@@ -94,7 +94,7 @@ func bindProxy(p *ProxyConf) {
 /*
 * 处理转发
 * proxyPort 需要转发的目的端口
-*/
+ */
 func handle(sourceConn net.Conn, p *ProxyConf) {
 	destination := getDestination(p)
 	tcpAddr_dest, err := net.ResolveTCPAddr("tcp4", destination)
@@ -136,7 +136,7 @@ func checkError(err error) bool {
 /* 获取监听端口和转发端口
 * bindPort  监听端口，也是源端口
 * proxyPort 需要转发的目的端口
-*/
+ */
 
 func getBindPortAndProxypassPort(p *ProxyConf) (bindPort int, isTls bool, tlsConf *TlsConf) {
 	bindPort, _ = strconv.Atoi(p.Source)
@@ -145,22 +145,26 @@ func getBindPortAndProxypassPort(p *ProxyConf) (bindPort int, isTls bool, tlsCon
 	return
 }
 
-var curDestIndex = 0;
+var curDestIndex = 0
 
-var destCount = 0;
+var destCount = 0
 
 func getDestination(p *ProxyConf) (destination string) {
 	destinations := p.Destinations
-	if curDestIndex >= destCount {
-		curDestIndex = 0
-	}
 	if strings.Contains(destinations, ",") {
 		destSlice := strings.Split(destinations, ",")
 		destCount = len(destSlice)
+	TRY_NEXT:
+		if curDestIndex >= destCount {
+			curDestIndex = 0
+		}
 		d := destSlice[curDestIndex]
 		if PortIsOpen(d, 10) {
-			curDestIndex ++
 			destination = d
+			curDestIndex++
+		} else {
+			curDestIndex++
+			goto TRY_NEXT
 		}
 
 	} else {

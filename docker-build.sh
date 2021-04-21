@@ -1,6 +1,6 @@
 #!/bin/bash
 
 ./build-all.sh
-docker build -t cetciot/mqtt-broker-proxy:latest .
+docker build -t cetciot/tcp-proxy:latest .
 mkdir ./bin
-docker save -o ./bin/mqtt-broker-proxy.tar cetciot/mqtt-broker-proxy:latest
+docker save -o ./bin/tcp-proxy.tar cetciot/tcp-proxy:latest
