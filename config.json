@@ -1,1 +1,1 @@
-[{"source":"8089","destinations":"192.168.0.105:8080,127.0.0.1:8080","tls":false,"tlsCf":null}]
+[{"source":"8089","destinations":"192.168.0.108:1883","tls":false,"tlsCf":null},{"source":"8080","destinations":"192.168.0.108:8080,192.168.0.95:8080","tls":true,"tlsCf":{"crtPath":"./certs/server.pem","keyPath":"./certs/server.key"}}]

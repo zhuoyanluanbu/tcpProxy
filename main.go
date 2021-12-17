@@ -21,3 +21,4 @@ func openBrowser (url string)  {
 	exec.Command(`xdg-open`, url).Start()
 	exec.Command(`open`, url).Start()
 }
+
